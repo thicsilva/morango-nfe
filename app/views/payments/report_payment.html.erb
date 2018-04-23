@@ -1,0 +1,138 @@
+<!-- CSS PARA REMOVER O BOTÃO IMPRIMIR NA VIEW DE IMPRESSÃO -->
+  <style type="text/css">
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+}
+</style>
+
+<!-- INSERI ESSA VERIFICAÇÃO DE AMBIENTE PRA CARREGAR OS PDF'S TANTO LOCALMENTE QUANTO NO HEROKU -->
+<% if Rails.env.development? %>
+  <style type="text/css">
+    <%= Rails.application.assets.find_asset('application.css').to_s.html_safe %>
+</style>
+<% end %>
+
+<div class="container-fluid">
+
+<%- model_class = Client -%>
+<br />
+<%= image_tag "logo_mini.png" %>
+<div class="page-header">
+  <h2>Relatório geral de Contas á Pagar</h2>
+
+  Periodo: <%= @datainicial %> até <%=@datafinal %>
+
+
+  <%= form_tag(report_payment_path, method: :get) do %>
+  <div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+			  <%= select_tag(:type_report, options_for_select([['POR CATEGORIA DE DESPESA', 'POR CATEGORIA DE DESPESA'], ['GERAL', 'GERAL']]), include_blank: 'Selecione o Tipo de relatório:', class: 'form-control', id: 'printbtn')%>
+			</div>
+			</div>
+
+  <div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+		<%= select_tag(:supplier, options_from_collection_for_select(@suppliers, "id", "name"), include_blank: 'Selecione o fornecedor:', class: 'form-control', id: 'printbtn') %>
+		</div>
+		</div>
+
+	<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+			  <%= select_tag(:tipo_consulta, options_for_select([['Á PAGAR', 'Á PAGAR'], ['PAGAS', 'PAGA']]), include_blank: 'Selecione:', class: 'form-control', id: 'printbtn')%>
+			</div>
+			</div>
+		<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-2">
+		<%= date_field_tag(:date1, params[:date1], placeholder: 'data inicial', class: 'form-control', id: 'printbtn') %>
+		<%= date_field_tag(:date2, params[:date2], placeholder: 'data final', class: 'form-control', id: 'printbtn') %>
+		</div>
+		</div>
+		<br />
+		<%= submit_tag "Consultar", class: 'btn btn-success', id: 'printbtn' %>
+<% end %>
+
+	<button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+
+
+ <h3><font color="red"><%= flash_messages %></font></h3>
+
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<% if params[:type_report] == 'POR CATEGORIA DE DESPESA' %>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+
+      <th><%= model_class.human_attribute_name('Categoria de Despesa') %></th>
+      <th><%= model_class.human_attribute_name('Total R$') %></th>
+      <th><%= model_class.human_attribute_name('Status') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @payments.each do |payment| %>
+
+    <tr>
+
+        <td><%= payment.categ_payment.name %></td>
+        <td><%= payment.value_doc %></td>
+        <td><%= payment.status %></td>
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% else %>
+<table class="table table-striped">
+  <thead>
+    <tr>
+
+      <th><%= model_class.human_attribute_name('Nº docto') %></th>
+      <th><%= model_class.human_attribute_name('tipo') %></th>
+      <th><%= model_class.human_attribute_name('fornecedor') %></th>
+      <th><%= model_class.human_attribute_name('descrição') %></th>
+      <th><%= model_class.human_attribute_name('vencto') %></th>
+      <th><%= model_class.human_attribute_name('pagto') %></th>
+      <th><%= model_class.human_attribute_name('parcelas') %></th>
+      <th><%= model_class.human_attribute_name('valor R$') %></th>
+      <th><%= model_class.human_attribute_name('status') %></th>
+
+
+    </tr>
+  </thead>
+  <tbody>
+    <% @payments.each do |payment| %>
+      <tr>
+
+        <td><%= payment.doc_number %></td>
+        <td><%= payment.type_doc %></td>
+        <td><%= payment.supplier.name %></td>
+        <td><%= payment.description %></td>
+        <td><%= payment.due_date %></td>
+        <td><%= payment.payment_date %></td>
+        <td><%= payment.installments %></td>
+        <td><%= payment.value_doc %></td>
+        <td><%= payment.status %></td>
+
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
+
+Total R$: <b><%= @total_payments %></b>
+</div>

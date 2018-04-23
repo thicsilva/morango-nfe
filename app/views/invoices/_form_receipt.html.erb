@@ -1,0 +1,33 @@
+<p>
+<%= form_for(@invoice, url: baixar_invoice_path, method: :post) do |f| %>
+   <!--  LINHAS COMENTADAS PARA DEIXAR PADRÃO A FORMA DE PAGAMENTO DINHEIRO E 1 PARCELA
+    <div class="col-lg-3">
+    <% if @invoice.status == 'ABERTA' %>
+    	<%= f.select(:form_receipt, options_for_select([["BOLETO"],["CHEQUE"], ["CRÉDITO"],["DÉBITO"],["DINHEIRO"]], @invoice.form_receipt), {include_blank: 'Forma de pagamento'}, :class => 'form-control') %>
+    <% else %>
+    	<%= f.select(:form_receipt, options_for_select([["BOLETO"],["CHEQUE"], ["CRÉDITO"],["DÉBITO"],["DINHEIRO"]], @invoice.form_receipt), {include_blank: 'Forma de pagamento'}, readonly: true, :class => 'form-control') %>
+    <% end %>
+    </div>
+    <%= f.error_span(:form_receipt) %>
+
+    <div class="col-lg-2">
+    <% if @invoice.status == 'ABERTA' %>
+      <%= f.select(:installments, options_for_select([["1"],["2"], ["3"],["4"],["5"],["6"], ["7"],["8"],["9"],["10"],["11"],["12"]], @invoice.installments), {include_blank: 'Parcelas'}, :class => 'form-control') %>
+    <% else %>
+      <%= f.select(:installments, options_for_select([["1"],["2"], ["3"],["4"],["5"],["6"], ["7"],["8"],["9"],["10"],["11"],["12"]], @invoice.installments), {include_blank: 'Parcelas'}, disabled: true, :class => 'form-control') %>
+    <% end %>
+    </div>
+    <%= f.error_span(:installments) %>
+    &nbsp;
+   -->
+   <!-- VAI DEIXAR DE SER USADO
+    <% if @invoice.status == 'ABERTA' %>
+    <%= f.check_box :status %>&nbsp;<%= f.label "baixa automática" %>
+    <% else %>
+    <%= f.check_box :status, readonly: true %>&nbsp;<%= f.label "baixa automática" %>
+    <% end %>
+  -->
+  <div align="right">
+ <%= f.submit 'Finalizar ', :class => 'btn btn-warning' %>
+  </div>
+<% end %>

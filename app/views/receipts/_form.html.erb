@@ -1,0 +1,103 @@
+<%= form_for @receipt, :html => { :class => "form-horizontal receipt" } do |f| %>
+
+  <% if @receipt.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@receipt.errors.count, "error") %> prohibited this receipt from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @receipt.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label 'Nº doc', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-1">
+      <%= f.text_field :doc_number, :class => 'form-control', id: 'doc_number' %>
+    </div>
+    <%=f.error_span(:doc_number) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'tipo', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.select(:type_doc, options_for_select([["BOLETO"],["CHEQUE"],["CRÉDITO"],["DINHEIRO"], ["O.S"]], @receipt.type_doc), {include_blank: 'Selecione'}, :class => 'form-control') %>
+    </div>
+    <%=f.error_span(:type_doc) %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label 'cliente', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-6">
+      <%= f.collection_select(:client_id, @clients, :id, :name, {include_blank: 'Selecione:'},:class => 'form-control') %>
+    </div>
+    <%=f.error_span(:client_id) %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label 'descrição', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-5">
+      <%= f.text_field :discription, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:discription) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'data vencto', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.date_field :due_date, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:due_date) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'data recebto', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.date_field :receipt_date, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:receipt_date) %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label 'forma recebto', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.select(:form_receipt, options_for_select([["BOLETO"],["CHEQUE"], ["CRÉDITO"],["DÉBITO"],["DINHEIRO"]], @receipt.form_receipt), {include_blank: 'Selecione'}, :class => 'form-control') %>
+    </div>
+    <%=f.error_span(:form_receipt) %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label 'parcelas', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.select(:installments, options_for_select([["1"], ["2"],["3"],["4"], ["5"],["6"],["7"], ["8"],["9"],["10"], ["11"],["12"]], @receipt.installments), {include_blank: 'Selecione'},:class => 'form-control') %>
+    </div>
+    <%=f.error_span(:installments) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'valor doc', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.text_field :value_doc, :class => 'form-control', id: 'real' %>
+    </div>
+    <%=f.error_span(:value_doc) %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label "status", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.select(:status, options_for_select([["Á RECEBER"], ["RECEBIDA"]], @receipt.status), {include_blank: 'Selecione'}, :class => 'form-control') %>
+    </div>
+    <%=f.error_span(:status) %>
+  </div>
+  
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+
+      <%= f.submit 'Salvar', data: { disable_with: "Processando..." }, :class => 'btn btn-primary' %>
+      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                receipts_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+
+<% end %>

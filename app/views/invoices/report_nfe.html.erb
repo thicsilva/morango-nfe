@@ -1,0 +1,102 @@
+<!-- CSS PARA REMOVER O BOTÃO IMPRIMIR NA VIEW DE IMPRESSÃO -->
+  <style type="text/css">
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+}
+</style>
+
+<!-- INSERI ESSA VERIFICAÇÃO DE AMBIENTE PRA CARREGAR OS PDF'S TANTO LOCALMENTE QUANTO NO HEROKU -->
+<% if Rails.env.development? %>
+  <style type="text/css">
+    <%= Rails.application.assets.find_asset('application.css').to_s.html_safe %>
+</style>
+<% end %>
+
+<%= image_tag "logo_mini.png" %>
+<div class="container-fluid">
+
+<%- model_class = Client -%>
+
+<div class="page-header">
+  <h2>Relatório geral de Notas fiscais</h2>
+
+  Periodo: <%= @datainicial %> até <%=@datafinal %><br />
+  <% if @client.present? %>
+  Cliente: <%= @client.name %>
+  <% end %>
+<%= form_tag(report_nfe_path, method: :get) do %>
+
+<%
+=begin %>
+<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-2">
+		<%= select_tag(:tipo_consulta, options_for_select([['Orçamento', 'Orçamento'], ['Venda', 'Venda']]), include_blank: 'Pesquisar por:', class: 'form-control', id: 'printbtn')%>
+			</div>
+		</div>
+ <%
+=end %>
+
+<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+		<%= select_tag(:client_id, options_from_collection_for_select(@clients, "id", "name", params[:client_id]), include_blank: 'Selecione o cliente:', class: 'form-control', id: 'printbtn')%>
+		  	  </div>
+		</div>
+
+<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-2">
+		<%= date_field_tag(:date1, params[:date1], placeholder: 'data inicial', class: 'form-control', id: 'printbtn') %>
+		</div>
+		</div>
+
+<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-2">
+		<%= date_field_tag(:date2, params[:date2], placeholder: 'data final', class: 'form-control', id: 'printbtn') %>
+		</div>
+		</div>
+	</div>
+		<br />
+		<%= submit_tag "Consultar", class: 'btn btn-success', id: 'printbtn' %>
+<% end %>
+
+	<button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+ <%= link_to 'Download Xml / Danfe', download_xml_path, {:remote => true, 'data-toggle' =>  "modal", 'data-target' => '#myModal', :class => 'btn btn-primary'}  %>
+
+<!-- CARREGA AQUI O FORM MODAL PRA CADASTRAR PRODUTO NOVO -->
+<div id="myModal" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name('id') %></th>
+      <th><%= model_class.human_attribute_name('tipo venda') %></th>
+      <th><%= model_class.human_attribute_name('cliente') %></th>
+      <th><%= model_class.human_attribute_name('valor') %></th>
+      <th><%= model_class.human_attribute_name('status') %></th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <% @invoices.each do |invoice| %>
+      <tr>
+        <td><%= invoice.id %></td>
+        <td><%= invoice.type_invoice %></td>
+        <td><%= invoice.client.name %></td>
+        <td><%= invoice.items.sum(:total_value_sale) %></td>
+        <td><%= invoice.status %></td>
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+Quantidade emitida: <b><%= @qnt_items %></b><br />
+Total geral R$: <b><%= @total_items %></b>

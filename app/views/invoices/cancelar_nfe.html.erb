@@ -1,0 +1,59 @@
+<h1>Cancelamento de NF-e</h1>
+
+<%= form_for(@invoice, :html => { :class => "form-horizontal invoice" }, url: cancel_nfe_path, method: :post) do |f| %>
+
+  <% if @invoice.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@invoice.errors.count, "error") %> prohibited this invoice from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @invoice.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+    <!-- guardando o ambiente para saber se é teste ou produção -->
+    <%= f.hidden_field :environment, :value=> @show_emitente.check_env %>
+
+    
+    <div class="form-group">
+    <%= f.label 'Código referência *', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.text_field :id, :class => 'form-control', readonly: true %>
+	</div>
+    <%=f.error_span(:id) %>
+  </div>
+    
+	<div class="form-group">
+    <%= f.label 'Informe a justificativa de cancelamento *', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-10">
+    <%= f.text_area :justificativa_cancelamento, class: "form-control", cols: "10", rows: "5", placeholder: "Digite..." -%>
+	</div>
+    <%=f.error_span(:justificativa_cancelamento) %>
+  </div>
+    
+    </div>
+ 
+ <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <%= f.submit 'Enviar Cancelamento NF-e', data: { disable_with: "Processando..." }, :class => 'btn btn-primary' %>
+      <%= link_to 'Cancelar', invoices_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+<% end %>
+<br />
+<br />
+
+<div class="jumbotron">
+<h2>Informações sobre o cancelamento de NF-e</h2>
+<h4>- É obrigatória a descrição da justificativa de cancelamento.</h4>
+<h4>- A NF-E só poderá ser cancelada em até 24 horas após a sua emissão.</h4>
+<h4>- Após o cancelamento, não será mais possivel visualizar a NF-e.</h4>
+
+
+</div>
+

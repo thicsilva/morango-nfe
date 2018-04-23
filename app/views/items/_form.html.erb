@@ -1,0 +1,157 @@
+<script>
+// AQUI É FEITA A CONSULTA COM BASE NO PRODUTO SELECIONADO NO COMBOBOX E EXIBIDO NOS TEXTFIELDS O RESULTADO
+$(document).ready(function() {
+    $("#selectprod").change(function(){
+  	// limpa os campos primeiro
+  	$("#quant").val('');
+  	$("#cost_sale").val('');
+  	$("#t_cost").val('');
+  	$("#t_sale").val('');
+
+    	$.ajax({
+    		url: '/consulta_prod.json',
+    		data: {
+    			name: $("#selectprod option:selected").text(),
+    		},
+    		datatype: "script",
+
+    		success: function(obj){
+        	$('#ncm').val(obj.codigo_ncm);
+
+
+        },
+        error: function(){
+            console.log(arguments);
+        }
+
+    	});
+   	});
+ });
+
+</script>
+
+<script>
+//se não informar o produto
+$(document).ready(function(){
+$('#quant').on('keyup',function(){
+
+    if ($('#selectprod').val() ) {
+       }
+       else {
+       	$("#quant").val('');
+        $("#selectprod").focus();
+       	swal("Aviso:", "Selecione primeiro o produto.", "warning");
+
+    }
+});
+});
+</script>
+
+
+<script>
+$(document).ready(function(){
+$('#quant').on('keyup',function(){
+  //comentado o total de custo vai ser calculado na conversao em venda
+     //var total = $('#quant').val() * $('#cost_value').val();
+     //$('#t_cost').val(total.toFixed(2));
+
+     var total = $('#quant').val() * $('#cost_sale').val();
+      $('#t_sale').val(total.toFixed(2));
+
+      //var profit = $('#t_sale').val() - $('#t_cost').val();
+      //$('#t_profit').val(profit.toFixed(2));
+
+});
+});
+</script>
+
+<script>
+//se não informar o produto
+$(document).ready(function(){
+$('#cost_value').on('keyup',function(){
+
+    if ($('#selectprod').val() ) {
+       }
+       else {
+       	$("#quant").val('');
+        $("#selectprod").focus();
+       	alert("Selecione primeiro o produto!");
+
+    }
+});
+});
+</script>
+
+<script>
+//da o foco na quantidade depois de selecionado o produto
+$(document).ready(function() {
+    $('#selectprod').change(function() {
+      if ($('#selectprod option:selected').text() != null){
+          $("#cost_value").val('');
+          $("#cost_sale").focus();
+      }
+    });
+});
+</script>
+<h5>Adicionar item</h5>
+
+<%= form_for ([@invoice, @invoice.items.build]) do |f| %>
+
+<% if @invoice.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@invoice.errors.count, "error") %> prohibited this heritage from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @invoice.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+	<div class="col-lg-3">
+    <% if @invoice.status == 'ABERTA' %>
+    <%= f.collection_select(:product_id, @products, :id, :name, {include_blank: 'Selecione o item'},:class => 'form-control', id: 'selectprod', :autofocus => true) %>
+    <% else %>
+    <%= f.collection_select(:product_id, @products, :id, :name, {include_blank: 'Selecione o item'},:class => 'form-control', disabled: true) %>
+    <% end %>
+    </div>
+<!-- comentado, o valor vai ser inserido na conversão em venda
+    <div class="col-lg-1">
+	<%= f.text_field :cost_value, class: "form-control", placeholder: "R$ custo", id: 'cost_value' -%>
+	</div>
+-->
+	<div class="col-lg-2">
+	<%= f.text_field :sale_value, class: "form-control", placeholder: "Valor venda R$", id: 'cost_sale' -%>
+	</div>
+
+    <div class="col-lg-2">
+	<%= f.text_field :qnt, class: "form-control", placeholder: "Quantidade", id: 'quant' -%>
+	</div>
+
+<!-- comentado, o valor vai ser inserido na conversão em venda
+	<div class="col-lg-2">
+	<%= f.text_field :total_value_cost, class: "form-control", placeholder: "T custo", id: 't_cost', readonly: true -%>
+	</div>
+-->
+
+	<div class="col-lg-2">
+	<%= f.text_field :total_value_sale, class: "form-control", placeholder: "Total venda R$", id: 't_sale', readonly: true -%>
+	</div>
+<!-- comentado, o valor vai ser inserido na conversão em venda
+    <div class="col-lg-1">
+	<%= f.text_field :profit_sale, class: "form-control", placeholder: "lucro liq", id: 't_profit', readonly: true -%>
+	</div>
+-->
+	<%= f.hidden_field :codigo_ncm, id: 'ncm' -%>
+
+	<% if @invoice.status == 'ABERTA' %>
+    <%= f.submit 'Adicionar', class: 'btn btn-primary', id: 'add' %>
+    <% else %>
+    <%= f.submit 'Adicionar', disabled: true, class: 'btn btn-primary', id: 'add' %>
+    <% end %>
+
+<% end %>

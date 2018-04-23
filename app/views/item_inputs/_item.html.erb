@@ -1,0 +1,34 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th> <%= 'produto' %></th>
+      <th><%= 'qnt' %></th>
+      <th><%= 'val unit R$' %></th>
+      <th><%= 'total R$' %></th>
+      
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+      
+    </tr>
+  </thead>
+  <tbody>
+ 
+ 	<% @header_input.item_inputs.each do |item_input| %>
+        <tr>
+        <td><%= item_input.product.name %></td>
+        <td><%= item_input.qnt %></td>
+        <td><%= item_input.cost_value %></td>
+        <td><%= item_input.total_value_cost %></td>
+                
+	        <% if @header_input.status == 'ABERTA' %>
+	      		<td><%= link_to t('.destroy', :default => t("helpers.links.destroy")), [item_input.header_input, item_input], :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger' %>
+		      	<% else %> 
+		        <td><%= link_to t('.destroy', :default => t("helpers.links.destroy")), [item_input.header_input, item_input], :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger', disabled: true %>
+		        </td>
+	        <% end %>
+      </tr>
+      <% end %>
+       </tbody>
+       
+   </table>
+
+

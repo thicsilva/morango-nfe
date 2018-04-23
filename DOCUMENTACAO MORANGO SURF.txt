@@ -1,0 +1,32 @@
+PROJETO WEB - MORANGO SURF - INICIO EM 08/03/2016 ás 20:43hs
+
+OBS*** ALTERAR O CADASTRO DE ITENS NA INVOICE
+
+CADASTROS
+Clientes OK 
+Fornecedores OK
+Produtos OK
+Vendedores OK
+Usuários OK
+Categorias de Despesa OK 
+
+MOVIMENTAÇÕES
+Vendas
+
+FINANCEIRO
+Contas á Pagar OK
+Contas á Receber OK
+
+RELATÓRIOS
+Clientes OK 
+Fornecedores OK
+Produtos OK
+Vendedores OK
+Categoria de Despesa OK 
+
+UTILITÁRIOS
+Data de Expiração do Software OK
+
+NA VENDA:
+
+QUANTIDADE VENDIDA / VALOR DE COMPRA / VALOR VENDA => AI É FEITA A MULTIPLICAÇÃO DA QUANTIDADE x VALOR DE COMPRA, AI SALVA, QNT X VAL VENDA E SALVA TBM

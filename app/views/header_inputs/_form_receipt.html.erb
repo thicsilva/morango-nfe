@@ -1,0 +1,16 @@
+<p>
+<%= form_for(@header_input, url: baixar_header_input_path, method: :post) do |f| %>
+  <!-- LINHAS COMENTADAS PARA REMOVER A FORMA DE PAGAMENTO DEIXANDO PADRÃO DINHEIRO  
+ <div class="col-lg-3">
+    <% if @header_input.status == 'ABERTA' %>	
+    	<%= f.select(:form_payment, options_for_select([["BOLETO"],["CHEQUE"],["DEPÓSITO"],["DINHEIRO"]], @header_input.form_payment), {include_blank: 'Forma de pagamento'}, :class => 'form-control') %>
+    <% else %>
+    	<%= f.select(:form_payment, options_for_select([["BOLETO"],["CHEQUE"],["DINHEIRO"]], @header_input.form_payment), {include_blank: 'Forma de pagamento'}, readonly: true, :class => 'form-control') %>
+    <% end %>
+    </div>
+    <%= f.error_span(:form_payment) %>
+    -->   
+     
+ <%= f.submit 'Finalizar ', :class => 'btn btn-warning' %>
+
+<% end %>

@@ -1,0 +1,1 @@
+json.array! @cancel_numerals, partial: 'cancel_numerals/cancel_numeral', as: :cancel_numeral

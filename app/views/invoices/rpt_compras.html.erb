@@ -1,0 +1,163 @@
+<style>
+
+table {
+    border-collapse: collapse;
+}
+
+table, td, th, tr, td {
+    border: 1px solid black;
+		padding: 2px;
+		font-size: small;
+}
+
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+}
+</style>
+<% if @rota_selecionada.present? %>
+<style>
+	@media print {
+    #esconde-gerais {
+    display :  none;
+    }
+}
+</style>
+<% end %>
+
+<% if @rota_selecionada.present? %>
+<h2>Relatório geral de entregas - <b><%= @rota_selecionada %></b></h2>
+<% else %>
+<h2>Analíse de compras | entregas</h2>
+<% end %>
+<h4>Pré-vendas: <%= @data_pedidos %> | Compras: <%= @data_compras %></h4>
+<%= form_tag(rpt_compras_path, method: :get) do %>
+<div id="printbtn">Pesquisa por rota:</div>
+<div class="form-group">
+  <div class="row">
+    <div class="col-lg-3">
+      <%= select_tag(:nome_da_rota, options_from_collection_for_select(@routes, "name", "name", params[:nome_da_rota]), include_blank: 'Selecione a rota:', class: 'form-control', id: 'printbtn') %>
+  	 </div>
+    </div>
+  <div class="form-group">
+  <br />
+  <%= submit_tag "Consultar", class: 'btn btn-success', id: 'printbtn' %>
+<% end %>
+  <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+</div>
+</div>
+</div>
+
+<div class="col-sm-12">
+<div class="panel panel-default">
+<div class="panel-heading"><h4>Quantidades | Valor de venda a serem entregues por cliente:</h4></div>
+<div class="panel-body">
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Cliente</th>
+    <% @uniqProducts.keys.each do |productName| %>
+      <th><%= productName %></th>
+    <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @clients.each_pair do |clientName, clientProducts| %>
+    <tr>
+      <td><%= clientName %></td>
+      <% @uniqProducts.keys.each do |productName| %>
+      <td class="number"><% if clientProducts[productName].present? %>
+        <%= clientProducts[productName] %> <% else %>0<% end %></td>
+      <% end #uniqProducts.keys %>
+    </tr>
+    <% end #myCities.each_with_keys %>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+
+<div id="esconde-gerais">
+
+    <div class="col-sm-6">
+    <div class="panel panel-primary">
+    <div class="panel-heading"><h4>Quantidades gerais por produto a ser comprado:</h4></div>
+    <div class="panel-body">
+    <table class="table table-striped">
+      <thead>
+          <tr>
+          <th>Produto</th>
+          <th>Quantidade</th>
+        </tr>
+
+      </thead>
+      <tbody>
+        <% @pre_vendas_do_dia.each do |pre_venda| %>
+          <tr>
+            <td><%= pre_venda.produto %></td>
+            <td><%= pre_venda.quantidade %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    </div>
+    </div>
+    </div>
+
+    <div class="col-sm-6">
+    <div class="panel panel-primary">
+    <div class="panel-heading"><h4>Quantidades gerais por produto já comprado:</h4></div>
+    <div class="panel-body">
+    <% if @compras_do_dia.present? %>
+    <table class="table table-striped">
+      <thead>
+          <tr>
+          <th>Produto</th>
+          <th>Quantidade</th>
+        </tr>
+
+      </thead>
+      <tbody>
+        <% @compras_do_dia.each do |compra_dia| %>
+          <tr>
+            <td><%= compra_dia.produto %></td>
+            <td><%= compra_dia.quantidade %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% else %>
+    <h4 align="center">Não encontramos nenhuma compra formalizada com data superior a data de pré venda.<br><br><%= image_tag('missing.png') %><b>Verique se as compras já foram lançadas!</b></h4>
+    <% end %>
+    </div>
+    </div>
+    </div>
+</div>
+
+<div class="col-sm-12">
+<div class="panel panel-default">
+<div class="panel-heading"><h4>Quantidades gerais a serem entregues por rota:</h4></div>
+<div class="panel-body">
+<% @compras.each do |nome_rota| %>
+<table class="table table-striped">
+  <thead>
+      <tr>
+      <th><%= nome_rota.rota %></th>
+      <th>Quantidade</th>
+    </tr>
+  </thead>
+  <% @compras_do_dia_por_rota = Item.joins('inner join invoices on items.invoice_id = invoices.id').joins(:product).joins('inner join invoices on items.invoice_id = invoices.id').joins('inner join clients on invoices.client_id = clients.id').select('products.name as produto, SUM(qnt) as quantidade').where('clients.route_id = ?', nome_rota.id_rota.to_i).where('items.created_at::Date = ?', @data_pedidos).group('products.name').order('products.name DESC') %>
+  <tbody>
+    <% @compras_do_dia_por_rota.each do |compra| %>
+      <tr>
+        <td><%= compra.produto %></td>
+        <td><%= compra.quantidade %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
+</div>
+</div>
+</div>

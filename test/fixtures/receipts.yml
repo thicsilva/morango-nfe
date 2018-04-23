@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  doc_number: MyString
+  type_doc: MyString
+  discription: MyString
+  due_date: 2016-01-09
+  receipt_date: 2016-01-09
+  installments: 1
+  value_doc: 9.99
+  client_id: 
+
+two:
+  doc_number: MyString
+  type_doc: MyString
+  discription: MyString
+  due_date: 2016-01-09
+  receipt_date: 2016-01-09
+  installments: 1
+  value_doc: 9.99
+  client_id: 

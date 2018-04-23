@@ -1,0 +1,58 @@
+<!-- CSS PARA REMOVER O BOTÃO IMPRIMIR NA VIEW DE IMPRESSÃO -->
+  <style type="text/css">
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+}
+</style>
+
+<!-- INSERI ESSA VERIFICAÇÃO DE AMBIENTE PRA CARREGAR OS PDF'S TANTO LOCALMENTE QUANTO NO HEROKU -->
+<% if Rails.env.development? %>
+  <style type="text/css">
+    <%= Rails.application.assets.find_asset('application.css').to_s.html_safe %>
+</style>
+<% end %>
+<div class="container-fluid">
+<%- model_class = Client -%>
+<%= image_tag "logo_mini.png" %>
+<div class="page-header">
+  <h2>Relatório geral de Clientes </h2>
+  Gerado em: <%= Time.now.strftime("%d/%m/%Y %H:%M") %><br />
+  <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+
+  </div>
+  </div>
+</div>
+ <table class="table table-striped">
+  <thead>
+    <tr>
+
+      <th><%= model_class.human_attribute_name("nome") %></th>
+      <th><%= model_class.human_attribute_name("fone") %></th>
+      <th><%= model_class.human_attribute_name("Celular") %></th>
+      <th><%= model_class.human_attribute_name("Cpf / Cnpj") %></th>
+      <th><%= model_class.human_attribute_name("Email") %></th>
+
+      </tr>
+  </thead>
+  <tbody>
+    <% @clients.each do |client| %>
+      <tr>
+
+        <td><%= client.name %></td>
+        <td><%= client.phone %></td>
+        <td><%= client.cellphone %></td>
+        <td><%= client.cnpj %></td>
+        <td><%= client.email %></td>
+
+        <td>
+
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+Total de Clientes cadastrados: <b><%= @total_clients %></b>
+</div>

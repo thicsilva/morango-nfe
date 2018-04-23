@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+  	 <%= image_tag attachments['logo.png'].url %> 
+  
+    <h1>Bem vindo <%= @user.name %>!</h1>
+    <p>
+      Você foi cadastrado(a), com sucesso!<br />
+      O seu email para acesso ao aplicativo é: <%= @user.email %>.<br />
+      E a sua senha é: <%= @user.password %></p>
+      
+      Fique á vontade para atualizar o seus dados depois que fizer o seu acesso.
+    </p>
+    <p>
+      Para acessar o nosso aplicativo acesse o link abaixo informando o seu email e senha:<br />
+      
+     <a href="http://srplastic.noip.me">Clique aqui para acessar o aplicativo</a>
+      
+    </p>
+    <p>Obrigado por juntar-se á nós!</p>
+  </body>
+</html>

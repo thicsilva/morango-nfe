@@ -1,0 +1,66 @@
+<%= form_for @product, :html => { :class => "form-horizontal product" } do |f| %>
+
+  <% if @product.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@product.errors.count, "error") %> prohibited this product from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @product.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label "nome", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-5">
+      <%= f.text_field :name, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:name) %>
+  </div>
+
+   <div class="form-group">
+     <%= f.label "Atualizado em:", :class => 'control-label col-lg-2' %>
+     <div class="col-lg-2">
+       <%= f.date_field :data_atualizacao_custo, :class => 'form-control', disabled: true %>
+     </div>
+     <%=f.error_span(:data_atualizacao_custo) %>
+   </div>
+
+  <div class="form-group">
+    <%= f.label "Valor custo", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.text_field :cost_value, :class => 'form-control', id: 'real' %>
+    </div>
+    <%=f.error_span(:cost_value) %>
+  </div>
+
+   <div class="form-group">
+    <%= f.label 'Unid medida', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+     <%= f.select(:unidade_comercial, options_for_select([["BD"], ["CM"], ["CX"], ["DZ"], ["FD"], ["GL"], ["GR"], ["KG"], ["LT"], ["M2"], ["M3"], ["MG"], ["ML"], ["MM"], ["MT"], ["PC"], ["UN"]], @product.unidade_comercial), {include_blank: 'Selecione'}, :class => 'form-control') %>
+    </div>
+    <%=f.error_span(:unidade_comecial) %>
+  </div>
+
+    <div class="form-group">
+    <%= f.label 'NCM', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.text_field :codigo_ncm, :class => 'form-control', id: 'ncm', :maxlength=>"8" %>
+    </div>
+    <%=f.error_span(:codigo_ncm) %>
+  </div>
+
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+
+      <%= f.submit 'Salvar', data: { disable_with: "Processando..." }, :class => 'btn btn-primary' %>
+        <%= link_to "Cancelar", products_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+
+<% end %>

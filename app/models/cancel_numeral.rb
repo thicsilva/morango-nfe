@@ -1,0 +1,2 @@
+class CancelNumeral < ApplicationRecord
+end

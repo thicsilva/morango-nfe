@@ -1,0 +1,45 @@
+<%- model_class = ExpireDate -%>
+<div class="page-header">
+  <h1>Configurações</h1>
+</div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+    <th><%= model_class.human_attribute_name('Razão social') %></th>
+      <th><%= model_class.human_attribute_name('Data') %></th>
+      <th><%= model_class.human_attribute_name('Ativo?') %></th>
+      <th><%= model_class.human_attribute_name('renovado em') %></th>
+      <th><%= model_class.human_attribute_name('ambiente') %></th>
+      <th>Atualização custo</th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @expire_dates.each do |expire_date| %>
+      <tr>
+
+        <td><%= link_to expire_date.razao, expire_date_path(expire_date) %></td>
+        <td><%= expire_date.date_expire %></td>
+        <td><%= expire_date.active %></td>
+        <td><%= expire_date.created_at.strftime("%d/%m/%Y") %></td>
+        <td><b><%= expire_date.check_env %></b></td>
+        <td><%= expire_date.updated_cost %></td>
+        <td>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_expire_date_path(expire_date), :class => 'btn btn-default btn-xs' %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      expire_date_path(expire_date),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% if @expire_dates.blank? %>
+<%= link_to t('.new', :default => t("helpers.links.new")),
+            new_expire_date_path,
+            :class => 'btn btn-primary' %>
+<% end %>

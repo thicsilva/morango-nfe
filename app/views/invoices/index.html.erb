@@ -1,0 +1,287 @@
+<% if @invoices.present? %>
+
+		<!--SE CLICAR PARA MARCAR TODOS OS CHECKBOXES -->
+		<script>
+				$(document).ready(function(){
+					$( '#total' ).text( '0.00' );
+					//document.getElementById("total").textContent = '0.00';
+					//para fechar a div que exibe o total geral selecionado
+					$('#closeButton').on('click', function(e) {
+		        $('#previewBox').remove();
+		    });
+						$("#checkAll").change(function () {
+							$("input:checkbox").prop('checked', $(this).prop("checked"));
+								if($("input:checkbox").prop('checked')) {
+									var $checkboxes = $('input[name^="item_ids[]"]');
+									var total = 0;
+								  $('input[name^="item_ids[]"]:checked').each(function(){
+								    var val = parseFloat($(this).parents("tr").find('input[name^="txtCostAmount"]').val());
+								    total += val;
+								  });
+
+								  $('input[name="txtNetAmount"]').val(total);
+									 document.getElementById("total").textContent = total.toFixed(2);;
+
+							 } else {
+								 $("input:checkbox").prop('checked', $(this).prop("checked"));
+							 	$( '#total' ).text( '0.00' );
+							 }
+					});
+				});
+		</script>
+		<!--SOMA AS CONTAS COM O CHECKBOX MARCADO SOMENTE -->
+		<script>
+		$(document).ready(function(){
+		  var $checkboxes = $('input[name^="item_ids[]"]');
+		  $checkboxes.change(function() {
+		      calculateTotal();
+		  });
+		});
+
+		function calculateTotal() {
+		  var total = 0;
+		  $('input[name^="item_ids[]"]:checked').each(function(){
+		    var val = parseFloat($(this).parents("tr").find('input[name^="txtCostAmount"]').val());
+		    total += val;
+		  });
+
+		  $('input[name="txtNetAmount"]').val(total);
+			 $("#total").val(total);
+			 document.getElementById("total").textContent= total.toFixed(2);;
+		}
+		</script>
+
+<script>
+$(document).ready(function() {
+function posicionaBotoes() {
+var modal = $("#modal");
+$(".botoes-modal").css('right', modal.offset().left);
+$(".botoes-modal").css('top', modal.offset().top + 160);
+}
+});
+</script>
+
+<script>
+	$(document).ready(function() {
+	$('#arraste').draggable();
+	});
+</script>
+
+<% end %>
+
+<style type="text/css">
+/* Div's usadas para exibir o total flutuante na parte superior direita da tela */
+#modal {
+  position: relative;
+  width: 100%;
+}
+#absolute {
+  position: absolute;
+  top: 20px;
+  right: 250px;
+}
+#botoes-acao {
+  position: fixed; /* não defina top/bottom/left/right */
+  width: 220px;
+  height: 60px;
+  padding: 2px;
+}
+#closeButton {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+#arraste {
+  display: inline-block; /* Para não gerar rolagem para direita */
+}
+
+.item {
+	float:left;
+	padding-left: 50%;
+	padding: 0px 0px 0px 16px !important;
+	border: none;
+	vertical-align: middle;
+	height: 48px;
+	line-height: 48px;
+}
+
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+		#previewBox {
+				display :  none;
+		}
+
+    @media print {
+  a[href]:after {
+    content: none !important;
+  }
+}
+}
+
+#printOnly {
+   display : none;
+}
+
+@media print {
+    #printOnly {
+       display : block;
+    }
+}
+</style>
+
+<style media="screen">
+#div2{
+	float:right;
+	padding-right:1px;
+}
+</style>
+
+
+<%- model_class = Invoice -%>
+<div class="page-header">
+  <h1>Pré / Vendas</h1>
+  <h5>Pesquisa por data de lançamento:</h5>
+<%= form_tag(invoices_path, method: :get) do %>
+
+		<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+		<%= date_field_tag(:date1, params[:date1], placeholder: 'data inicial', class: 'form-control') %>
+		<%= date_field_tag(:date2, params[:date2], placeholder: 'data final', class: 'form-control') %>
+    <%= select_tag(:nome_da_rota, options_from_collection_for_select(@routes, "name", "name", params[:nome_da_rota]), include_blank: 'Selecione a rota:', class: 'form-control', id: 'printbtn') %>
+
+		</div>
+		</div>
+		<br />
+		<%= submit_tag "Consultar", class: 'btn btn-success' %>
+<% end %>
+	<%= link_to t('.new', :default => t("helpers.links.new")), new_invoice_path, :class => 'btn btn-primary' %>
+</div>
+
+<% if @invoices.present? %>
+</div>
+</div>
+<h4 align="right"><input type="checkbox" id="checkAll"/> Marcar  / Desmarcar todos</h4></label></p>
+
+<%= form_tag change_multiple_prevenda_path, method: :post do %>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name('id') %></th>
+      <th><%= model_class.human_attribute_name('tipo venda') %></th>
+      <th><%= model_class.human_attribute_name('cliente') %></th>
+      <th><%= model_class.human_attribute_name('rota') %></th>
+      <th><%= model_class.human_attribute_name('valor') %></th>
+      <th><%= model_class.human_attribute_name('status') %></th>
+      <th><%= model_class.human_attribute_name('data pré venda') %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @invoices.each do |invoice| %>
+      <tr>
+        <td><%= link_to invoice.id, invoice_path(invoice) %></td>
+        <td><%= invoice.type_invoice %></td>
+        <td><%= invoice.client.name %></td>
+        <td><%= invoice.client.route.name %></td>
+        <td><%= number_with_precision(invoice.valor_total, precision: 2) %>
+          <!-- pega o valor do total geral da prevenda para ser somado quando selecionado o checkbox -->
+          <%= hidden_field_tag :value_doc,'', value: invoice.valor_total, class: 'value_doc', name: 'txtCostAmount'+ invoice.id.to_s %></td>
+        <td><%= invoice.status %></td>
+        <td><%= invoice.data_prevenda %></td>
+        <td>
+
+          <!-- gera o checkbox com o id de cada lançamento -->
+          <%= check_box_tag "item_ids[]", invoice.id %>
+
+        <% if invoice.type_invoice == 'Orçamento' %>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_invoice_path(invoice), :class => 'btn btn-default btn-xs' %>
+         <% end %>
+
+         <% if invoice.type_invoice == 'Pré venda' && invoice.status == 'ABERTA' && invoice.valor_total.present? %>
+           <%= link_to 'Converter em venda', converter_venda_invoice_path(invoice),
+           :method => :get,
+           :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Deseja converter em venda?')) },
+           :class => 'btn btn-xs btn-warning' %>
+
+          <% end %>
+
+          <!-- Se a NFE foi CANCELADA é disponibilizado o link para download do XML gerado do cancelamento -->
+         <% if invoice.status == 'NFE cancelada' %>
+         <%= link_to 'XML NFe', invoice.url_xml, download: 'data', class: 'btn btn-primary btn-xs' %>
+	         <% if invoice.caminho_xml_cancelamento.present? %>
+	         	<%= link_to 'XML Cancelamento', invoice.caminho_xml_cancelamento, download: 'data', class: 'btn btn-default btn-xs' %>
+	         <% end %>
+         <% end %>
+
+         <!--SE EXISTE SOMENTE A VENDA OU A NOTA JÁ FOI EMITIDA E CANCELADA -->
+         <% if invoice.status == 'NFE cancelada' || invoice.status == 'ABERTA' || invoice.status == 'FINALIZADA' || invoice.status == 'Á RECEBER' || invoice.status == 'RECEBIDA' %>
+         	<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+
+                      invoice_path(invoice),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+
+          <!--SE A NOTA JÁ FOI EMITIDA -->
+          <% elsif invoice.url_danfe.present? && invoice.caminho_pdf_correcao.blank? %>
+	         <%= link_to 'NFe', invoice.url_danfe, target: '_blank', class: 'btn btn-primary btn-xs' %>
+	         <%= link_to 'XML Nfe', invoice.url_xml, download: 'data', class: 'btn btn-primary btn-xs' %>
+	         <%= link_to 'Carta NFe', corrige_nfe_path(:id => invoice.id), class: 'btn btn-warning btn-xs' %>
+	         <%= link_to 'Canc. NFe', cancelar_nfe_path(:id => invoice.id), class: 'btn btn-warning btn-xs' %>
+
+	      <!--PDF DE CARTA DE CORREÇÃO E XML CORREÇÃO -->
+	      <% elsif invoice.caminho_pdf_correcao.present? %>
+	         <%= link_to 'NFe', invoice.url_danfe, target: '_blank', class: 'btn btn-primary btn-xs' %>
+	         <%= link_to 'XML Nfe', invoice.url_xml, download: 'data', class: 'btn btn-primary btn-xs' %>
+
+	         <%= link_to 'PDF carta', invoice.caminho_pdf_correcao, target: '_blank', class: 'btn btn-default btn-xs' %>
+	         <%= link_to 'XML carta', invoice.caminho_xml_correcao, download: 'data', class: 'btn btn-default btn-xs' %>
+
+	         <%= link_to 'Nova carta NFe', corrige_nfe_path(:id => invoice.id), class: 'btn btn-warning btn-xs' %>
+	         <%= link_to 'Canc. NFe', cancelar_nfe_path(:id => invoice.id), class: 'btn btn-warning btn-xs' %>
+
+	    <% end %>
+
+
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="form-group">
+  <div class="col-lg-offset-10 col-lg-2">
+  <%= submit_tag "CONVERTER SELECIONADOS EM VENDA", :data => { :confirm => t('.confirm', :default => t("Deseja converter em venda?")) }, class: 'btn btn-danger btn-xs', id: 'printbtn', onClick: "$(this).closest('form').attr('action', '#{ change_multiple_prevenda_path(format: :html) }')" %>
+</div>
+</div>
+<br><br>
+<% end %>
+<p></p>
+</div>
+<% else %>
+<p>
+<h4 class="jumbotron text-center" style="background: #aqui coloco a cor !important">Não existem dados com base nos parametros informados.</h4>
+<% end %>
+
+<% if @invoices.present? %>
+<!-- exibe o total selecionado -->
+	<div id="previewBox">
+			<div id="absolute">
+				<div id="arraste">
+				<div id="botoes-acao" class="botoes-modal">
+					 <div class="panel panel-default">
+						 <b>Calculadora:</b>
+					 <div class="panel-heading"><h4><b>R$<span id="total"></span></b><button id="closeButton">X</button></h4></div>
+					</div>
+				</div>
+			</div>
+	</div>
+	</div>
+	<% end %>
+</div>

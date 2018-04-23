@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  cnpj: MyString
+  user: MyString
+  serie: 1
+  inicial_number: 1
+  final_number: 1
+  justificativa: MyString
+  url_xml: MyString
+
+two:
+  cnpj: MyString
+  user: MyString
+  serie: 1
+  inicial_number: 1
+  final_number: 1
+  justificativa: MyString
+  url_xml: MyString

@@ -1,0 +1,50 @@
+<html>
+<body background="">
+
+ <div class="jumbotron">
+        <h1>Fale conosco</h1>
+        <p>Entre em contato através da nossa central pelo telefone: (11)4308-1643</p>
+        <p>Ou se preferir preencha o formulário abaixo e nos envie.</p>
+</div>
+
+
+<%= form_for @message, url: contact_path, :html => { :class => "form-horizontal father" } do |message_form| %>
+
+<div class="form-group">
+    <%= message_form.label "Nome", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= message_form.text_field :name, :class => 'form-control', :placeholder => "Digite o seu nome" %>
+    </div>
+    <%=message_form.error_span(:name) %>
+  </div>
+
+<div class="form-group">
+    <%= message_form.label :email, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= message_form.text_field :email, :class => 'form-control', :placeholder => "Digite o seu email" %>
+    </div>
+    <%=message_form.error_span(:email) %>
+  </div>
+
+  <div class="form-group">
+    <%= message_form.label "Mensagem", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-8">
+      <%= message_form.text_area :content, :class => 'form-control', :placeholder => "Digite a sua mensagem", size: '5x5' %>
+    </div>
+    <%=message_form.error_span(:content) %>
+  </div>
+
+
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+
+      <%= message_form.submit "Enviar", :class => 'btn btn-primary' %>
+    </div>
+    </div>
+
+
+<% end %>
+
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!-- CSS PARA REMOVER O BOTÃO IMPRIMIR NA VIEW DE IMPRESSÃO -->
+  <style type="text/css">
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+}
+</style>
+
+
+<!-- INSERI ESSA VERIFICAÇÃO DE AMBIENTE PRA CARREGAR OS PDF'S TANTO LOCALMENTE QUANTO NO HEROKU -->
+<% if Rails.env.development? %>
+  <style type="text/css">
+    <%= Rails.application.assets.find_asset('application.css').to_s.html_safe %>
+</style>
+<% end %>
+<div class="container-fluid">
+
+<%- model_class = Supplier -%>
+<br />
+<%= image_tag "logo_mini.png" %>
+<div class="page-header">
+  <h2>Relatório geral Fornecedores</h2>
+  Gerado em: <%= Time.now.strftime("%d/%m/%Y %H:%M") %> <br />
+  <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+
+  </div>
+</div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+
+      <th><%= model_class.human_attribute_name("nome") %></th>
+
+      <th><%= model_class.human_attribute_name("fone") %></th>
+      <th><%= model_class.human_attribute_name("celular") %></th>
+
+      <th><%= model_class.human_attribute_name("email") %></th>
+      <th><%= model_class.human_attribute_name("cidade") %></th>
+      <th><%= model_class.human_attribute_name("UF") %></th>
+
+
+    </tr>
+  </thead>
+  <tbody>
+    <% @suppliers.each do |supplier| %>
+      <tr>
+
+        <td><%= supplier.name %></td>
+
+        <td><%= supplier.phone %></td>
+        <td><%= supplier.cellphone %></td>
+
+        <td><%= supplier.email %></td>
+        <td><%= supplier.city %></td>
+        <td><%= supplier.state %></td>
+
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+Total de Fornecedores cadastrados <b><%= @total_suppliers %></b>

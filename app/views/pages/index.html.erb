@@ -1,0 +1,137 @@
+<% if !logged_in? %>
+
+ <div>
+    <object type="text/html" data="http://morangosurf.com.br/BANNER-DNFE/index.html" width="100%" height="100%" style="no-repeat center; height: 100%;
+    background-size: 100% 100%;
+    -moz-background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+    -o-background-size: 100% 100%;
+    color: #FFF;" >
+    </object>
+ </div>
+
+ <% else %>
+
+ <!--
+ <div align="center">
+     <div style="background: url('images/logo_morango.png')no-repeat center; height: 250px;width: 400px;
+     background-size: 100% 100%;
+     -moz-background-size: 100% 100%;
+     -webkit-background-size: 100% 100%;
+     -o-background-size: 100% 100%;
+     color: #FFF;" class="jumbotron">
+     </div>
+     </div>
+
+ -->
+
+ <h1>Bem vindo! <%= image_tag "emo_feliz.png" %></h1>
+
+ <h4>Análise gráfica anual de vendas - LUCRO BRUTO <%= image_tag 'sales_report.png' %></h4>
+</div>
+ <div class="panel panel-default">
+ <div class="panel-heading" >Total vendido por mês </div>
+ <h5 class="panel-body">
+ <div id="chart-container-m"><%= @meeting_annual.render() %></div>
+ </h5>
+ </div>
+
+ <h4>Análise gráfica anual de vendas - LUCRO LIQUÍDO <%= image_tag 'sales_report.png' %></h4>
+ <div class="panel panel-default">
+ <div class="panel-heading" >Total vendido por mês </div>
+ <h5 class="panel-body">
+ <div id="chart-container-m2"><%= @meeting_annual2.render() %></div>
+ </h5>
+ </div>
+
+ <!-- se tiver contas á pagar em aberto ele informa -->
+ <% if @payments.present? && current_user.fpag %>
+
+         <h4>Temos Contas á Pagar pendentes!</h4>
+
+     <table class="table table-striped">
+   <thead>
+     <tr>
+
+       <th>Nº docto</th>
+       <th>fornecedor</th>
+       <th>vencto</th>
+       <th>valor R$</th>
+
+
+       <th>Ações</th>
+     </tr>
+   </thead>
+   <tbody>
+     <% @payments.each do |payment| %>
+       <tr>
+
+         <td><%= link_to payment.doc_number, payment_path(payment) %></td>
+         <td><%= payment.supplier.name %></td>
+         <td><%= payment.due_date %></td>
+         <td><%= payment.value_doc %></td>
+
+         <td>
+           <%= link_to 'Editar / Baixar',
+                       edit_payment_path(payment), :class => 'btn btn-default btn-xs' %>
+
+       </tr>
+     <% end %>
+
+   </tbody>
+ </table>
+ Total R$: <b><%= @total_payments %></b>
+ <p>
+ <% end %>
+ <!-- AQUI COMEÇA O CONTAS Á RECEBER -->
+ <% if @receipts.present? && current_user.frec %>
+ <hr>
+         <h4>Temos Contas á Receber pendentes!</h4>
+         <table class="table table-striped">
+   <thead>
+     <tr>
+
+       <th>Nº doc</th>
+       <th>cliente</th>
+       <th>data vencto</th>
+       <th>Doc R$</th>
+
+       <th><%=t '.actions', :default => t("helpers.actions") %></th>
+     </tr>
+   </thead>
+   <tbody>
+     <% @receipts.each do |receipt| %>
+       <tr>
+
+         <td><%= link_to receipt.doc_number, receipt_path(receipt) %></td>
+         <td><%= receipt.client.name %></td>
+         <td><%= receipt.due_date %></td>
+         <td><%= receipt.value_doc %></td>
+
+         <td>
+
+           <%= link_to 'Editar / Baixar',
+                       edit_receipt_path(receipt), :class => 'btn btn-default btn-xs' %>
+
+         </td>
+       </tr>
+     <% end %>
+   </tbody>
+ </table>
+ Total R$: <b><%= @total_receipts %></b>
+
+
+   <% end %>
+
+   <!-- SE NÃO TIVER NADA DE CONTAS Á PAGAR E RECEBER -->
+ 	<% if @payments.blank? && @receipts.blank? %>
+ 	<div class="jumbotron">
+ 	      <div class="container">
+ 	       <p>Não existem contas á pagar ou receber vencidas ou vencendo hoje.</p>
+ 	      </div>
+ 	    </div>
+ 	<% end %>
+
+ <% end %>
+ <hr />
+ <p>&copy; <%= @date %> - D&D Support Service - Consultoria em T.I.</p>

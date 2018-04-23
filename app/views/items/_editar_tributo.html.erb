@@ -1,0 +1,159 @@
+<script>
+	<% if @check_cest == 'não' %>
+	//exibe ou não a escala relevante
+	$('.escala-relevante').hide();
+	$('.escala').hide();
+	<% end %>
+
+	$(document).ready(function () {
+		$(function() {
+		$('#cest').on('input', function () {
+				if($(this).val().length > 0) {
+						$('.escala').show();
+				}
+				else {
+					$('.escala').hide();
+				}
+		});
+});
+
+		var ckbox = $('#check-escala');
+    $(ckbox).on('click',function () {
+        if (this.checked){
+           $('.escala-relevante').show();
+  	}
+        else {
+           $('.escala-relevante').hide();
+        }
+    });
+});
+</script>
+
+<script>
+$(document).ready(function () {
+
+	//mascara para cpf/cnpj
+	$(function() {
+	$('#cnpj-fab').focusout(function() {
+				 var cpfcnpj, element;
+				 element = $(this);
+				 element.unmask();
+				 cpfcnpj = element.val().replace(/\D/g, '');
+				 if (cpfcnpj.length > 11) {
+						 element.mask("99.999.999/999?9-99");
+				 } else {
+						 element.mask("999.999.999-99?9-99");
+				 }
+		 }).trigger('focusout');
+ });
+ });
+ </script>
+<script>
+	$("#ncm").mask("99999999",{placeholder:""});
+	$("#cfop").mask("9999",{placeholder:""});
+</script>
+
+<!-- Modal -->
+<div data-toggle="modal" data-target="myModal" >
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Informação de tributos <%= image_tag('taxes.png') %></h4>
+      </div>
+      <div class="modal-body">
+
+
+<h5><font color="red"><%= @produto.name %></font></h5>
+<hr />
+
+<%= form_for @item, :html => { :class => "form-horizontal invoice" } do |f| %>
+
+    <%= f.hidden_field :id, :value=> @item.id %>
+
+    <div class="form-group">
+    <%= f.label 'CFOP', :class => 'control-label col-lg-4' %>
+    <div class="col-lg-3">
+    <%= f.collection_select(:cfop, @cfops, :codigo, :codigo, {include_blank: 'Selecione:'},:class => 'form-control', id: 'cfop') %>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'NCM', :class => 'control-label col-lg-4' %>
+    <div class="col-lg-4">
+    <%= f.text_field :codigo_ncm, :class => 'form-control', id: 'ncm', :maxlength=>"8" %>
+    </div>
+    </div>
+
+	<div class="form-group">
+    <%= f.label 'ICMS:', :class => 'control-label col-lg-4' %>
+    <div class="col-lg-5">
+    <%= f.select(:icms_situacao_tributaria, options_for_select([["00: tributada integralmente","00"],["10: tributada e com cobrança do ICMS por substituição tributária","10"],["20: tributada com redução de base de cálculo","20"],["30: isenta ou não tributada e com cobrança do ICMS por substituição tributária","30"],["40: isenta","40"],["41: não tributada","41"],["50: suspensão","50"],["51: diferimento (a exigência do preenchimento das informações do ICMS diferido fica a critério de cada UF)","51"],["60: cobrado anteriormente por substituição tributária","60"],["70: tributada com redução de base de cálculo e com cobrança do ICMS por substituição tributária","70"],["90: outras (regime Normal)","90"],["101: tributada pelo Simples Nacional com permissão de crédito","101"],["102: tributada pelo Simples Nacional sem permissão de crédito","102"],["103: isenção do ICMS no Simples Nacional para faixa de receita bruta","103"],["201: tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária","201"],["202: tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária","202"],["203: isenção do ICMS nos Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária","203"],["300: imune","300"],["400: não tributada pelo Simples Nacional","400"],["500: ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação"],["900: outras (regime Simples Nacional)","900"]], @item.icms_situacao_tributaria), {include_blank: 'Selecione'}, :class => 'form-control') %>
+	</div>
+    </div>
+    <!--
+    <div class="form-group">
+    <%= f.label 'IPI:', :class => 'control-label col-lg-4' %>
+    <div class="col-lg-3">
+    <%= f.select(:ipi_situacao_tributaria, options_for_select([["00: entrada com recuperação de crédito","00"],["01: entrada tributada com alíquota zero","01"],["02: entrada isenta","02"],["03: entrada não-tributada","03"],["04: entrada imune","04"],["05: entrada com suspensão","05"],["49: outras entradas","49"],["50: saída tributada","50"],["51: saída tributada com alíquota zero","51"],["52: saída isenta","52"],["53: saída não-tributada","53"],["54: saída imune","54"],["55: saída com suspensão","56"],["99: outras saídas","99"]], @item.ipi_situacao_tributaria), {include_blank: 'Selecione'}, :class => 'form-control') %>
+	</div>
+    </div>
+    -->
+    <div class="form-group">
+    <%= f.label 'PIS:', :class => 'control-label col-lg-4' %>
+    <div class="col-lg-5">
+    <%= f.select(:pis_situacao_tributaria, options_for_select([["01: operação tributável: base de cálculo = valor da operação (alíquota normal - cumulativo/não cumulativo)","01"],["02: operação tributável: base de calculo = valor da operação (alíquota diferenciada)","02"],["03: operação tributável: base de calculo = quantidade vendida × alíquota por unidade de produto","03"],["04: operação tributável: tributação monofásica (alíquota zero)","04"],["05: operação tributável: substituição tributária","05"],["06: operação tributável: alíquota zero","06"],["07: operação isenta da contribuição","07"],["08: operação sem incidência da contribuição","08"],["09: operação com suspensão da contribuição","09"],["49: outras operações de saída","49"],["50: operação com direito a crédito: vinculada exclusivamente a receita tributada no mercado interno","50"],["51: operação com direito a crédito: vinculada exclusivamente a receita não tributada no mercado interno","51"],["52: operação com direito a crédito: vinculada exclusivamente a receita de exportação","52"],["53: operação com direito a crédito: vinculada a receitas tributadas e não-tributadas no mercado interno","53"],["54: operação com direito a crédito: vinculada a receitas tributadas no mercado interno e de exportação","54"],["55: operação com direito a crédito: vinculada a receitas não-tributadas no mercado interno e de exportação","55"],["56: operação com direito a crédito: vinculada a receitas tributadas e não-tributadas no mercado interno e de exportação","56"],["60: crédito presumido: operação de aquisição vinculada exclusivamente a receita tributada no mercado interno","60"],["61: crédito presumido: operação de aquisição vinculada exclusivamente a receita não-tributada no mercado interno","61"],["62: crédito presumido: operação de aquisição vinculada exclusivamente a receita de exportação","62"],["63: crédito presumido: operação de aquisição vinculada a receitas tributadas e não-tributadas no mercado interno","63"],["64: crédito presumido: operação de aquisição vinculada a receitas tributadas no mercado interno e de exportação","64"],["65: crédito presumido: operação de aquisição vinculada a receitas não-tributadas no mercado interno e de exportação","65"],["66: crédito presumido: operação de aquisição vinculada a receitas tributadas e não-tributadas no mercado interno e de exportação","66"],["67: crédito presumido: outras operações","67"],["70: operação de aquisição sem direito a crédito","70"],["71: operação de aquisição com isenção","71"],["72: operação de aquisição com suspensão","72"],["73: operação de aquisição a alíquota zero","73"],["74: operação de aquisição sem incidência da contribuição","74"],["75: operação de aquisição por substituição tributária","75"],["98: outras operações de entrada","98"],["99: outras operações","99"]], @item.pis_situacao_tributaria), {include_blank: 'Selecione'}, :class => 'form-control') %>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'COFINS:', :class => 'control-label col-lg-4' %>
+    <div class="col-lg-5">
+    <%= f.select(:cofins_situacao_tributaria, options_for_select([["01: operação tributável: base de cálculo = valor da operação (alíquota normal - cumulativo/não cumulativo)","01"],["02: operação tributável: base de calculo = valor da operação (alíquota diferenciada)","02"],["03: operação tributável: base de calculo = quantidade vendida × alíquota por unidade de produto","03"],["04: operação tributável: tributação monofásica (alíquota zero)","04"],["05: operação tributável: substituição tributária","05"],["06: operação tributável: alíquota zero","06"],["07: operação isenta da contribuição","07"],["08: operação sem incidência da contribuição","08"],["09: operação com suspensão da contribuição","09"],["49: outras operações de saída","49"],["50: operação com direito a crédito: vinculada exclusivamente a receita tributada no mercado interno","50"],["51: operação com direito a crédito: vinculada exclusivamente a receita não tributada no mercado interno","51"],["52: operação com direito a crédito: vinculada exclusivamente a receita de exportação","52"],["53: operação com direito a crédito: vinculada a receitas tributadas e não-tributadas no mercado interno","53"],["54: operação com direito a crédito: vinculada a receitas tributadas no mercado interno e de exportação","54"],["55: operação com direito a crédito: vinculada a receitas não-tributadas no mercado interno e de exportação","55"],["56: operação com direito a crédito: vinculada a receitas tributadas e não-tributadas no mercado interno e de exportação","56"],["60: crédito presumido: operação de aquisição vinculada exclusivamente a receita tributada no mercado interno","60"],["61: crédito presumido: operação de aquisição vinculada exclusivamente a receita não-tributada no mercado interno","61"],["62: crédito presumido: operação de aquisição vinculada exclusivamente a receita de exportação","62"],["63: crédito presumido: operação de aquisição vinculada a receitas tributadas e não-tributadas no mercado interno","63"],["64: crédito presumido: operação de aquisição vinculada a receitas tributadas no mercado interno e de exportação","64"],["65: crédito presumido: operação de aquisição vinculada a receitas não-tributadas no mercado interno e de exportação","65"],["66: crédito presumido: operação de aquisição vinculada a receitas tributadas e não-tributadas no mercado interno e de exportação","66"],["67: crédito presumido: outras operações","67"],["70: operação de aquisição sem direito a crédito","70"],["71: operação de aquisição com isenção","71"],["72: operação de aquisição com suspensão","72"],["73: operação de aquisição a alíquota zero","73"],["74: operação de aquisição sem incidência da contribuição","74"],["75: operação de aquisição por substituição tributária","75"],["98: outras operações de entrada","98"],["99: outras operações","99"]], @item.cofins_situacao_tributaria), {include_blank: 'Selecione'}, :class => 'form-control') %>
+	</div>
+    </div>
+
+    <div class="form-group">
+		<%= f.label 'name','CEST:', :class => 'control-label col-lg-4' %>
+		<div class="col-lg-5">
+		<%= f.text_field :cest, :class => 'form-control', placeholder: 'Cód Cest:', id: 'cest' %>
+		</div>
+		</div>
+		<div class="escala">
+			<div class="form-group">
+			<%= f.label 'name','Escala relevante?:', :class => 'control-label col-lg-4' %>
+			<div class="col-lg-5">
+				<%= f.check_box :escala_relevante ,id: 'check-escala' %>
+			</div>
+			</div>
+		</div>
+
+		<div class="escala-relevante">
+			<div class="form-group">
+			<%= f.label 'name','CNPJ fabricante:', :class => 'control-label col-lg-4' %>
+			<div class="col-lg-5">
+			<%= f.text_field :cnpj_fabricante, :class => 'form-control', placeholder: 'Nº CNPJ:', id: 'cnpj-fab' %>
+			</div>
+			</div>
+			<div class="form-group">
+			<%= f.label 'name','Cód benef fiscal:', :class => 'control-label col-lg-4' %>
+			<div class="col-lg-5">
+			<%= f.text_field :codigo_beneficio_fiscal_uf, :class => 'form-control', placeholder: 'Cód beneficio:', id: 'cod-benef' %>
+			</div>
+			</div>
+		</div>
+
+
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <%= f.check_box :apply_all %>&nbsp;<%= f.label "Aplicar á todos itens" %>
+
+<div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <%= f.submit 'Salvar', :class => 'btn btn-primary' %>
+      <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+    </div>
+  </div>
+
+<% end %>

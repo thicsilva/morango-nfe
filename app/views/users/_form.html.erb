@@ -1,0 +1,98 @@
+<%= form_for @user, :html => { :class => "form-horizontal user" } do |f| %>
+
+  <% if @user.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @user.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label "nome", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+      <%= f.text_field :name, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:name) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :email, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+      <%= f.text_field :email, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:email) %>
+  </div>
+  <div class="form-group">
+    <%= f.label "senha", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :password, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:password) %>
+  </div>
+
+<div class="form-group">
+    <%= f.label "tipo de acesso", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <% if current_user.type_access == 'USER' %>
+      <%= f.select(:type_access, options_for_select([["MASTER"], ["ADMIN"],["USER"]], @user.type_access), {include_blank: 'Selecione'}, disabled: true ,:class => 'form-control') %>
+    <% elsif current_user.type_access == 'ADMIN' %>
+   	  <%= f.select(:type_access, options_for_select([["ADMIN"],["USER"]], @user.type_access), {include_blank: 'Selecione'},:class => 'form-control') %>
+    <% elsif current_user.type_access == 'MASTER' %>
+    <%= f.select(:type_access, options_for_select([["MASTER"], ["ADMIN"],["USER"]], @user.type_access), {include_blank: 'Selecione'},:class => 'form-control') %>
+    <% end %>
+    </div>
+    <%=f.error_span(:type_access) %>
+  </div>
+  <hr />
+  <% if current_user.type_access != 'User' %>
+<h4><%= "Perfil de acesso" %></h4>
+<h5><%= "Cadastros" %></h5>
+
+  <%= f.check_box :ccli %>&nbsp;<%= f.label "clientes" %>
+  <%= f.check_box :cforn %>&nbsp;<%= f.label "fornecedores" %><br />
+  <%= f.check_box :cprod %>&nbsp;<%= f.label "produtos" %>
+  <%= f.check_box :c_route %>&nbsp;<%= f.label "rotas" %><br />
+  <%= f.check_box :shipping %>&nbsp;<%= f.label "transportadoras" %>
+  <%= f.check_box :ccateg %>&nbsp;<%= f.label "tipo de despesa" %><br />
+  <%= f.check_box :cvend %>&nbsp;<%= f.label "vendedores" %>
+  <%= f.check_box :cuser %>&nbsp;<%= f.label "usuários" %>
+
+  <h5><%= "Movimentações" %></h5>
+  <%= f.check_box :minput %>&nbsp;<%= f.label "Entrada de compras" %><br />
+  <%= f.check_box :mos %>&nbsp;<%= f.label "Vendas" %><br />
+  <%= f.check_box :mconsul_nfe %>&nbsp;<%= f.label "Consultar status - NFe" %><br />
+  <%= f.check_box :mcancel_number %>&nbsp;<%= f.label "Cancelar numeração - NFe" %><br />
+  <%= f.check_box :mupload %>&nbsp;<%= f.label "Uploads" %>
+
+  <h5><%= "Financeiro" %></h5>
+  <%= f.check_box :fpag %>&nbsp;<%= f.label "contas pagar" %>
+  <%= f.check_box :frec %>&nbsp;<%= f.label "contas receber" %>
+
+  <h5><%= "Relatórios" %></h5>
+  <%= f.check_box :rcli %>&nbsp;<%= f.label "clientes" %>
+  <%= f.check_box :rfecha %>&nbsp;<%= f.label "fechamento" %>
+  <%= f.check_box :rforn %>&nbsp;<%= f.label "fornecedores" %><br />
+  <%= f.check_box :rnfe %>&nbsp;<%= f.label "notas fiscais" %>
+  <%= f.check_box :rpag %>&nbsp;<%= f.label "contas pagar" %>
+  <%= f.check_box :rrec %>&nbsp;<%= f.label "contas receber" %><br />
+  <%= f.check_box :rprod %>&nbsp;<%= f.label "produtos" %>
+  <%= f.check_box :r_compra %>&nbsp;<%= f.label "Analíse geral" %>
+  <%= f.check_box :rcateg %>&nbsp;<%= f.label "tipos de despesa" %><br />
+  <%= f.check_box :rvend %>&nbsp;<%= f.label "vendedores" %>
+  <% end %>
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+    <%= f.submit 'Salvar', data: { disable_with: "Processando..." }, :class => 'btn btn-primary' %>
+         <%= link_to "Cancelar",
+                users_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+
+<% end %>

@@ -1,0 +1,48 @@
+<!--
+<style>
+	#myModal .modal-dialog  {width:75%;}
+</style>
+-->
+
+<!-- Modal -->
+<div data-toggle="modal" data-target="myModal" >
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Download XML's / Danfes <%= image_tag('xml.png') %></h4>
+      </div>
+      
+	  <h5>&nbsp;&nbsp;&nbsp;&nbsp;<b>Bem vindo a central de downloads!</b><br />
+	  	  &nbsp;&nbsp;&nbsp;&nbsp;Aqui você pode baixar de uma só vez todas as Danfes e XML's dos ultimos 6 meses.<p />
+	  	&nbsp;&nbsp;&nbsp;&nbsp;Clique no botão desejado para fazer o download das Danfes / XML's do mês.</h5> 
+	
+      
+    <div class="modal-body">
+       	
+		 <table class="table table-striped">
+		  <thead>
+		    <tr>
+		      <th>Mês</th>
+		      <th>Danfes</th>
+		      <th>XMLs</th>
+		      
+		    </tr>
+		  </thead>
+		  <tbody>
+		    <% @download_danfe_xml.each do |address| %>
+		      <tr>
+		        <td><%= address['mes'] %></td>
+		        <td><%= link_to 'Download Danfes', address['danfes'], :class => 'btn btn-default btn-xs' %></td>
+				<td><%= link_to 'Download XMLs', address['xmls'], :class => 'btn btn-default btn-xs' %></td>
+		        <td>
+		        </td>
+		      </tr>
+		    <% end %>
+		  </tbody>
+		 </table>
+       	
+	</div>
+<hr />

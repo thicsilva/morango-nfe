@@ -1,0 +1,62 @@
+<%- model_class = ExpireDate -%>
+<div class="page-header">
+  <h1>Configurações</h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:razao) %>:</strong></dt>
+  <dd><%= @expire_date.razao %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:nome_fantasia) %>:</strong></dt>
+  <dd><%= @expire_date.nome_fantasia %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cnpj) %>:</strong></dt>
+  <dd><%= @expire_date.cnpj %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cep) %>:</strong></dt>
+  <dd><%= @expire_date.cep %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:endereco) %>:</strong></dt>
+  <dd><%= @expire_date.endereco %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:numero) %>:</strong></dt>
+  <dd><%= @expire_date.numero %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:bairro) %>:</strong></dt>
+  <dd><%= @expire_date.bairro %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:cidade) %>:</strong></dt>
+  <dd><%= @expire_date.cidade %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:uf) %>:</strong></dt>
+  <dd><%= @expire_date.uf %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:telefone) %>:</strong></dt>
+  <dd><%= @expire_date.telefone %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:inscricao) %>:</strong></dt>
+  <dd><%= @expire_date.inscricao %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:check_date) %>:</strong></dt>
+  <dd><%= @expire_date.check_date %></dd>
+  <dt><strong><%= model_class.human_attribute_name('ambiente NFE') %>:</strong></dt>
+  <dd><%= @expire_date.check_env %></dd>
+  <dt><strong>Data:</strong></dt>
+  <dd><%= @expire_date.date_expire %></dd>
+  <dt><strong>Ativo?:</strong></dt>
+  <dd><%= @expire_date.active %></dd>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%= link_to t('.back', :default => t("helpers.links.back")),
+              expire_dates_path, :class => 'btn btn-default'  %>
+<%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_expire_date_path(@expire_date), :class => 'btn btn-default' %>
+<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              expire_date_path(@expire_date),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %>

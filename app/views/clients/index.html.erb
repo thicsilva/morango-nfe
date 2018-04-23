@@ -1,0 +1,72 @@
+<%- model_class = Client -%>
+<div class="page-header">
+  <h1>Clientes</h1>
+
+<%= form_tag(clients_path, method: :get) do %>
+<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+			  <%= select_tag(:tipo_consulta, options_for_select([['Nome', 1], ['Cnpj', 2],['Email', 3]]), include_blank: 'Pesquisar por:', class: 'form-control')%>
+			</div>
+			</div>
+		<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+		<%= text_field_tag(:search, nil, placeholder: 'Digite o parametro...', class: 'form-control') %>
+		</div>
+		</div>
+		<br />
+		<%= submit_tag "Consultar", class: 'btn btn-success' %>
+<% end %>
+<%= link_to "Novo", new_client_path, :class => 'btn btn-primary' %>
+</div>
+</div>
+</div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+
+      <th><%= model_class.human_attribute_name("nome") %></th>
+      <th><%= model_class.human_attribute_name("rota") %></th>
+      <th><%= model_class.human_attribute_name("posição") %></th>
+      <th><%= model_class.human_attribute_name("fone") %></th>
+      <th><%= model_class.human_attribute_name("Celular") %></th>
+      <th><%= model_class.human_attribute_name("Cpf / Cnpj") %></th>
+      <th><%= model_class.human_attribute_name("Email") %></th>
+
+      <th>ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @clients.each do |client| %>
+      <tr>
+
+        <td><%= link_to client.name, client_path(client) %></td>
+        <% if client.route_id.present? %>
+        <td><%= client.route.name %></td>
+        <% else %>
+        <td>Não informado</td>
+        <% end %>
+        <td><%= client.position %></td>
+        <td><%= client.phone %></td>
+        <td><%= client.cellphone %></td>
+        <td><%= client.cnpj %></td>
+        <td><%= client.email %></td>
+
+        <td>
+
+          <%= link_to "Editar",
+                      edit_client_path(client), :class => 'btn btn-default btn-xs' %>
+          <%= link_to "Excluir",
+                      client_path(client),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+Total de Clientes cadastrados: <b><%= @total_clients %></b>

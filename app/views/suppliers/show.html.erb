@@ -1,0 +1,38 @@
+<%- model_class = Supplier -%>
+<div class="page-header">
+  <h1>Fornecedor</h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name("nome") %>:</strong></dt>
+  <dd><%= @supplier.name %></dd>
+  <dt><strong><%= model_class.human_attribute_name("endereço") %>:</strong></dt>
+  <dd><%= @supplier.address %></dd>
+  <dt><strong><%= model_class.human_attribute_name("bairro") %>:</strong></dt>
+  <dd><%= @supplier.neighborhood %></dd>
+  <dt><strong><%= model_class.human_attribute_name("cidade") %>:</strong></dt>
+  <dd><%= @supplier.city %></dd>
+  <dt><strong><%= model_class.human_attribute_name("estado") %>:</strong></dt>
+  <dd><%= @supplier.state %></dd>
+  <dt><strong><%= model_class.human_attribute_name("cep") %>:</strong></dt>
+  <dd><%= @supplier.zipcode %></dd>
+  <dt><strong><%= model_class.human_attribute_name("fone") %>:</strong></dt>
+  <dd><%= @supplier.phone %></dd>
+  <dt><strong><%= model_class.human_attribute_name("celular") %>:</strong></dt>
+  <dd><%= @supplier.cellphone %></dd>
+  <dt><strong><%= model_class.human_attribute_name("Cpf / Cnpj") %>:</strong></dt>
+  <dd><%= @supplier.cpf_cnpj %></dd>
+  <dt><strong><%= model_class.human_attribute_name("email") %>:</strong></dt>
+  <dd><%= @supplier.email %></dd>
+  
+</dl>
+
+<%= link_to "Voltar",
+              suppliers_path, :class => 'btn btn-default'  %>
+<%= link_to "Editar",
+              edit_supplier_path(@supplier), :class => 'btn btn-default' %>
+<%= link_to "Excluir",
+              supplier_path(@supplier),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Você tem certeza?')) },
+              :class => 'btn btn-danger' %>

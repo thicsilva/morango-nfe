@@ -1,0 +1,90 @@
+<!-- CSS PARA REMOVER O BOTÃO IMPRIMIR NA VIEW DE IMPRESSÃO -->
+  <style type="text/css">
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+}
+</style>
+
+<!-- INSERI ESSA VERIFICAÇÃO DE AMBIENTE PRA CARREGAR OS PDF'S TANTO LOCALMENTE QUANTO NO HEROKU -->
+<% if Rails.env.development? %>
+  <style type="text/css">
+    <%= Rails.application.assets.find_asset('application.css').to_s.html_safe %>
+</style>
+<% end %>
+
+<div class="container-fluid">
+
+<%- model_class = Client -%>
+<br />
+<%= image_tag "logo_mini.png" %>
+<div class="page-header">
+  <h2>Relatório geral de Contas á receber</h2>
+
+  Periodo: <%= @datainicial %> até <%=@datafinal %>
+
+  <%= form_tag(report_receipt_path, method: :get) do %>
+	<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+			  <%= select_tag(:tipo_consulta, options_for_select([['Á RECEBER', 'Á RECEBER'], ['RECEBIDAS', 'RECEBIDA']], params[:tipo_consulta]), include_blank: 'Selecione:', class: 'form-control', id: 'printbtn')%>
+			</div>
+			</div>
+		<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-2">
+		<%= date_field_tag(:date1, params[:date1], placeholder: 'data inicial', class: 'form-control', id: 'printbtn') %>
+		<%= date_field_tag(:date2, params[:date2], placeholder: 'data final', class: 'form-control', id: 'printbtn') %>
+		</div>
+		</div>
+		<br />
+		<%= submit_tag "Consultar", class: 'btn btn-success', id: 'printbtn' %>
+<% end %>
+
+    <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+
+  </div>
+  </div>
+</div>
+</div>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+
+      <th><%= model_class.human_attribute_name('Nº doc') %></th>
+      <th><%= model_class.human_attribute_name('tipo') %></th>
+      <th><%= model_class.human_attribute_name('cliente') %></th>
+      <th><%= model_class.human_attribute_name('descrição') %></th>
+      <th><%= model_class.human_attribute_name('vencto') %></th>
+      <th><%= model_class.human_attribute_name('Recebto') %></th>
+      <th><%= model_class.human_attribute_name('parcelas') %></th>
+      <th><%= model_class.human_attribute_name('valor R$') %></th>
+      <th><%= model_class.human_attribute_name('status') %></th>
+
+
+    </tr>
+  </thead>
+  <tbody>
+    <% @receipts.each do |receipt| %>
+      <tr>
+
+        <td><%= receipt.doc_number %></td>
+        <td><%= receipt.type_doc %></td>
+        <td><%= receipt.client.name %></td>
+        <td><%= receipt.discription %></td>
+        <td><%= receipt.due_date %></td>
+        <td><%= receipt.receipt_date %></td>
+        <td><%= receipt.installments %></td>
+        <td><%= receipt.value_doc %></td>
+        <td><%= receipt.status %></td>
+
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+Total R$: <b><%= @total_receipts %></b>
+</div>

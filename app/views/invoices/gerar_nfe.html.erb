@@ -1,0 +1,244 @@
+<!-- Calculo de soma dos campos
+	valor total = valor produtos + valor frete + valor seguro -->
+<script>
+$(document).ready(function(){
+$('#r1').on('keyup',function(){
+var a = +$('#v_prod').val();
+var b = +$('#r1').val();
+var c = +$('#r2').val();
+var total = a+b+c;
+$('#v_total').val((a+b+c).toFixed(2));
+});
+});
+</script>
+<script>
+$(document).ready(function(){
+$('#r2').on('keyup',function(){
+var a = +$('#v_prod').val();
+var b = +$('#r1').val();
+var c = +$('#r2').val();
+var total = a+b+c;
+$('#v_total').val((a+b+c).toFixed(2));
+});
+});
+</script>
+<script>
+	$('#tipo-frete').ready(function () {
+
+    if ($('#tipo-frete option:selected').text() == "Sem frete"){
+    	$('.hide-field').hide();
+    }
+    else if ($('#tipo-frete').val() ) {
+       $('.hide-field').show();
+    }
+    else{
+    	$('.hide-field').hide();
+    }
+});
+
+</script>
+
+<!-- Escondendo os campos do transporte de acordo com o valor selecionado -->
+<script>
+	$(document).ready(function() {
+    $('#tipo-frete').change(function () {
+        if ($('#tipo-frete option:selected').text() != "Sem frete"){
+            $('.hide-field').show();
+        }
+        else {
+        	$('.hide-field').hide();
+        }
+
+    });
+});
+</script>
+
+<h2>Emissor de Nota fiscal Eletrônica <%= image_tag "logo-nfe.png" %><br /> </h2>
+<h4>Ambiente de <b><%=@show_emitente.check_env %></b></h4>
+<h4><b><%= @invoice.client.name %></b></h4>
+<hr />
+<h4><b>1ª etapa - Identificação</b></h4>
+
+<%= form_for(@invoice, :html => { :class => "form-horizontal invoice" }, url: nfe_invoice_path, method: :post) do |f| %>
+
+  <% if @invoice.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@invoice.errors.count, "error") %> prohibited this invoice from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @invoice.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+    <!-- guardando o ambiente para saber se é teste ou produção -->
+    <%= f.hidden_field :environment, :value=> @show_emitente.check_env %>
+
+    <%= f.hidden_field :id, :value=> @invoice.id %>
+
+    <div class="form-group">
+    <%= f.label 'Finalidade *', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+    <%= f.select(:finalidade_emissao, options_for_select([["1: Nota normal","1"], ["2: Nota complementar","2"],["3: Nota de ajuste","3"],["4: Devolução de mercadoria","4"]], @invoice.finalidade_emissao), {selected: 'Selecione'}, :class => 'form-control') %>
+	</div>
+    <%=f.error_span(:finalidade_emissao) %>
+  </div>
+
+	<div class="form-group">
+    <%= f.label 'Natureza operação *', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+    <%= f.text_field :natureza_operacao, :value=> 'Venda', class: "form-control", placeholder: "Ex: Venda..." -%>
+	</div>
+    <%=f.error_span(:natureza_operacao) %>
+  </div>
+
+    <div class="form-group">
+    <%= f.label 'Tipo de Documento *', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+    <%= f.select(:tipo_documento, options_for_select([["Nota de saida","1"], ["Nota de entrada","0"]], @invoice.tipo_documento), {selected: '1'}, :class => 'form-control') %>
+
+	</div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'Data Emissão *', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.date_field :data_emissao, class: "form-control" %>
+
+	</div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'info adicionais', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-5">
+    <%= f.text_area :informacoes_adicionais_contribuinte, :class => 'form-control', :placeholder => "Digite aqui as informações adicionais..." %>
+	</div>
+    </div>
+    <hr />
+
+    <h4><b>2ª etapa - Cobrança</b></h4>
+
+    <div class="form-group">
+    <%= f.label 'Forma Pagamento *', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.select(:forma_pagamento_nf, options_for_select([["Dinheiro","01"], ["Cheque","02"], ["Cartão de Crédito","03"], ["Cartão de Débito","04"], ["Crédito Loja","05"], ["Vale Alimentação","10"], ["Vale Refeição","11"], ["Vale Presente","12"], ["Vale Combustível","13"],["Duplicata Mercantil","14"],["Boleto Bancário","15"],["Sem pagamento","90"], ["Outros","99"]], @invoice.forma_pagamento_nf), {include_blank: 'Selecione'}, :class => 'form-control', id: 'forma-pagto' ) %>
+
+	</div>
+    </div>
+    <hr />
+    <h4><b>3ª etapa - Transporte</b></h4>
+
+    <div class="form-group">
+    <%= f.label 'Modalidade frete *', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+    <%= f.select(:modalidade_frete, options_for_select([["Por conta do emitente","0"],["Por conta do destinatário","1"],["Por conta de terceiros","2"],["Transporte Próprio por conta do Remetente","3"],["Transporte Próprio por conta do Destinatário","4"],[" Operação presencial, fora do estabelecimento","5"],["Sem frete","9"]], @invoice.modalidade_frete), {include_blank: 'Selecione'}, :class => 'form-control', id:'tipo-frete') %>
+    </div>
+    </div>
+    <div class="hide-field">
+
+    <div class="form-group">
+    <%= f.label 'Transportadora', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+    <%= f.collection_select(:shipping_id, @shippings, :id, :name, {include_blank: 'Selecione'},:class => 'form-control') %>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'Valor Produtos', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.text_field :valor_produtos, :value=> @total_items, :class => 'form-control', id:'v_prod', :readonly=> true %>
+    </div>
+    </div>
+
+
+    <div class="form-group">
+    <%= f.label 'Valor frete', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.text_field :valor_frete,:class => 'form-control', id:'r1' %>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'Valor Seguro', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.text_field :valor_seguro,:class => 'form-control', id:'r2' %>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'Valor Total', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.text_field :valor_total,:class => 'form-control', id:'v_total', :readonly=> true %>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'Placa veiculo', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.text_field :veiculo_placa,:class => 'form-control', id:'placa', :onblur=>"this.value=this.value.toUpperCase()" %>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'UF', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.collection_select(:veiculo_uf, @estados, :sigla, :sigla, {include_blank: 'Selecione'},:class => 'form-control') %>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <%= f.label 'ANTT', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+    <%= f.text_field :veiculo_rntc,:class => 'form-control', :onblur=>"this.value=this.value.toUpperCase()" %>
+    </div>
+    </div>
+    <h4><b>Dados da Carga</b></h4>
+    <div class="form-group">
+    <%= f.label 'Quant volumes', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-1">
+    <%= f.text_field :quantidade_volume, :value=> @invoice.items.sum(:qnt), :class => 'form-control', :readonly => true %>
+    </div>
+    </div>
+    <div class="form-group">
+    <%= f.label 'Espécie', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.text_field :especie,:class => 'form-control', :onblur=>"this.value=this.value.toUpperCase()" %>
+    </div>
+    </div>
+    <div class="form-group">
+    <%= f.label 'Marca', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+    <%= f.text_field :marca,:class => 'form-control', :onblur=>"this.value=this.value.toUpperCase()" %>
+    </div>
+    </div>
+    <div class="form-group">
+    <%= f.label 'Número', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.text_field :numero,:class => 'form-control', :onblur=>"this.value=this.value.toUpperCase()" %>
+    </div>
+    </div>
+    <div class="form-group">
+    <%= f.label 'Peso bruto Kg', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.text_field :peso_bruto,:class => 'form-control', id: 'pbruto' %>
+    </div>
+    </div>
+    <div class="form-group">
+    <%= f.label 'Peso liquido Kg', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+    <%= f.text_field :peso_liquido,:class => 'form-control', id:'pliq' %>
+    </div>
+    </div>
+    </div>
+
+ <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <%= f.submit 'Emitir NF-e', data: { disable_with: "Processando..." }, :class => 'btn btn-success' %>
+      <%= link_to 'Cancelar', invoices_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,26 @@
+<h1>Consulta de Status - NF-e</h1>
+
+
+
+<h3>Digite o Nº de referência</h3>
+
+<%= form_tag(check_status_path, method: :get) do %>
+
+		<div class="form-group">			  
+		<div class="row">
+			  <div class="col-lg-2">	  
+		<%= text_field_tag(:id, params[:id], placeholder: 'digite...', class: 'form-control') %>
+		</div>
+		</div>
+				
+		<br />	
+		<%= submit_tag "Consultar", data: { disable_with: "Processando..." }, :class => 'btn btn-success' %>
+<% end %>
+
+<p />
+
+<div class="jumbotron">
+<h2>Informações sobre consulta de NF-e</h2>
+<h4>- Informe acima o numero do ID de venda e clique no botão Consultar.</h4>
+<h4>- Em seguida aparecerá uma mensagem informando qual é o status da respectiva venda junto ao SEFAZ.</h4>
+</div>

@@ -1,0 +1,38 @@
+<%- model_class = Document -%>
+<div class="page-header">
+  <h1>Upload de Arquivos</h1>
+  <%= link_to t('.new', :default => t("helpers.links.new")),
+              new_document_path,
+              :class => 'btn btn-primary' %>
+  </div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name('Arquivo') %></th>
+      <th><%= model_class.human_attribute_name('Dono') %></th>
+      <th><%= model_class.human_attribute_name('Criado em') %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @documents.each do |document| %>
+      <tr>
+        <td><%= document.filename %></td>
+        <td><%= document.owner %></td>
+        <td><%= document.created_at.strftime("%d/%m/%Y")%></td>
+        <td>
+         <% if current_user.name == document.owner %>
+          <%= link_to 'Download', document, method: :get, :class => 'btn btn-default btn-xs' %>
+
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      document_path(document),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

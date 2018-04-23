@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  qnt: 1
+  cost_value: 9.99
+  cost_sale: 9.99
+  supplier_id: 
+
+two:
+  name: MyString
+  qnt: 1
+  cost_value: 9.99
+  cost_sale: 9.99
+  supplier_id: 

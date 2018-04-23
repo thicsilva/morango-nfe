@@ -1,0 +1,40 @@
+<!-- CSS PARA REMOVER O BOTÃO IMPRIMIR NA VIEW DE IMPRESSÃO -->
+  <style type="text/css">
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+}
+</style>
+
+<%= image_tag "logo_mini.png" %>
+<div class="page-header">
+  <h3>Relatório geral de vendas dos ultimos 12 meses</h3>
+  <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+  <hr />
+  
+<table class="table table-striped">
+  <thead>
+    <tr>
+      
+      
+      <th>Mês</th>
+      <th>Total Venda R$</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    <% @result.each do |resultado| %>
+    
+    <tr>
+        <td><%= resultado.month.strftime("%B / %Y") %></td>
+        <td>R$ <%= number_with_precision(resultado.total, precision: 2) %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="jumbotron">
+	<h4>Observação:</h4>
+	Verifique se o mês corrente já foi encerrado, pois os valores ainda podem estar em aberto.
+	</div>

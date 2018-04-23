@@ -1,0 +1,156 @@
+  <style>
+
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+
+    @media print {
+  a[href]:after {
+    content: none !important;
+  }
+}
+}
+
+#printOnly {
+   display : none;
+}
+
+@media print {
+    #printOnly {
+       display : block;
+    }
+}
+</style>
+
+<!-- INSERI ESSA VERIFICAÇÃO DE AMBIENTE PRA CARREGAR OS PDF'S TANTO LOCALMENTE QUANTO NO HEROKU -->
+<% if Rails.env.development? %>
+  <style type="text/css">
+    <%= Rails.application.assets.find_asset('application.css').to_s.html_safe %>
+</style>
+<% end %>
+
+<%= image_tag "logo_mini.png" %>
+<div class="container-fluid">
+
+<%- model_class = Client -%>
+
+<div class="page-header">
+  <h2>Relatório geral de Vendas</h2>
+
+  Periodo: <%= @datainicial %> até <%=@datafinal %><br />
+  <% if @client.present? %>
+  Cliente: <%= @client.name %>
+  <% end %>
+<%= form_tag(report_invoice_path, method: :get) do %>
+
+<%
+=begin %>
+<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-2">
+		<%= select_tag(:tipo_consulta, options_for_select([['Orçamento', 'Orçamento'], ['Venda', 'Venda']]), include_blank: 'Pesquisar por:', class: 'form-control', id: 'printbtn')%>
+			</div>
+		</div>
+ <%
+=end %>
+
+<div class="form-group">
+  <div class="esconde-cliente">
+    <div class="row">
+        <div class="col-lg-3">
+    <%= select_tag(:client_id, options_from_collection_for_select(@clients, "id", "name", params[:client_id]), include_blank: 'Selecione o cliente:', class: 'form-control', id: 'printbtn')%>
+          </div>
+    </div>
+  </div>
+
+<div id="esconde-rota">
+  <div class="row">
+      <div class="col-lg-3">
+  <%= select_tag(:nome_da_rota, options_from_collection_for_select(@routes, "name", "name", params[:nome_da_rota]), include_blank: 'Selecione a rota:', class: 'form-control', id: 'printbtn') %>
+        </div>
+  </div>
+</div>
+
+<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-2">
+		<%= date_field_tag(:date1, params[:date1], placeholder: 'data inicial', class: 'form-control', id: 'printbtn') %>
+		</div>
+		</div>
+
+<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-2">
+		<%= date_field_tag(:date2, params[:date2], placeholder: 'data final', class: 'form-control', id: 'printbtn') %>
+		</div>
+		</div>
+	</div>
+		<br />
+		<%= submit_tag "Consultar", class: 'btn btn-success', id: 'printbtn' %>
+<% end %>
+
+	<button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+
+<hr />
+
+<h4>Gráfico geral por Itinerário</h4> <br />
+
+<%= pie_chart Invoice.joins('inner join clients on invoices.client_id = clients.id').joins('inner join routes on clients.route_id = routes.id').joins(:items).where(type_invoice: 'Venda').where("invoices.data_prevenda BETWEEN ? AND ?", params[:date1], params[:date2]).order("routes.name").group('routes.name').count %>
+<hr />
+<h4>Total geral por Itinerário</h4> <br />
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name('Itinerário') %></th>
+      <th><%= model_class.human_attribute_name('Qnt vendas') %></th>
+      <th><%= model_class.human_attribute_name('Total Venda R$') %></th>
+      <th><%= model_class.human_attribute_name('Total Lucro R$') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @total_by_route.each do |invoice| %>
+    <tr>
+        <td><%= invoice.name %></td>
+        <td><%= invoice.quantidade %></td>
+        <td><%= invoice.total %></td>
+        <td><%= invoice.total_lucro %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name('id') %></th>
+      <th><%= model_class.human_attribute_name('cliente') %></th>
+      <th><%= model_class.human_attribute_name('rota') %></th>
+      <th><%= model_class.human_attribute_name('Pré venda') %></th>
+      <th><%= model_class.human_attribute_name('valor') %></th>
+      <th><%= model_class.human_attribute_name('lucro') %></th>
+      <th><%= model_class.human_attribute_name('status') %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @invoices.each do |invoice| %>
+      <tr>
+        <td><%= link_to invoice.id, invoice_path(invoice) %></td>
+        <td><%= invoice.client.name %></td>
+        <% if invoice.client.route_id.present? %>
+        <td><%= invoice.client.route.name %></td>
+        <% else %>
+        <td>Não informado</td>
+        <% end %>
+        <td><%= invoice.data_prevenda.strftime("%d/%m/%Y") %></td>
+        <td><%= invoice.items.sum(:total_value_sale) %></td>
+        <td><%= invoice.items.sum(:profit_sale) %></td>
+        <td><%= invoice.status %></td>
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+Total geral R$: <b><%= number_with_precision(@total_items, precision: 2) %></b>
+<h4>Lucro  geral R$: <b><%= number_with_precision(@lucro_total, precision: 2) %></b></h4>

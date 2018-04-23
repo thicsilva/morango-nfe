@@ -1,0 +1,47 @@
+<%- model_class = CancelNumeral -%>
+<div class="page-header">
+  <h1>Inutilização de Numeração NFe</h1>
+</div>
+
+<%= link_to t('.new', :default => t("helpers.links.new")),
+            new_cancel_numeral_path,
+            :class => 'btn btn-primary' %>
+            
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name('Quem efetuou o cancelamento') %></th>
+      <th><%= model_class.human_attribute_name('série') %></th>
+      <th><%= model_class.human_attribute_name('numeração inicial') %></th>
+      <th><%= model_class.human_attribute_name('numeração final') %></th>
+      <th><%= model_class.human_attribute_name('criado em') %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @cancel_numerals.each do |cancel_numeral| %>
+      <tr>
+        <td><%= link_to cancel_numeral.user, cancel_numeral_path(cancel_numeral) %></td>
+        <td><%= cancel_numeral.serie %></td>
+        <td><%= cancel_numeral.inicial_number %></td>
+        <td><%= cancel_numeral.final_number %></td>
+        <td><%= cancel_numeral.created_at %></td>
+        <td>
+        	<%if cancel_numeral.url_xml.present?%>
+        	<%= link_to 'XML Download', cancel_numeral.url_xml, download: 'data', class: 'btn btn-default btn-xs' %>
+        	<%end%>
+        	<!--
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_cancel_numeral_path(cancel_numeral), :class => 'btn btn-default btn-xs' %> 
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      cancel_numeral_path(cancel_numeral),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %> -->
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+

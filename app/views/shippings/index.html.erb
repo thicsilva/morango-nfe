@@ -1,0 +1,60 @@
+<%- model_class = Shipping -%>
+<div class="page-header">
+  <h1>Cadastro de Transportadoras <%= image_tag('shipping.png')%></h1>
+  <h5>Pesquisar Transportadora pelo nome:</h5>
+<%= form_tag(shippings_path, method: :get) do %>
+
+		<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+		<%= text_field_tag(:descricao, params[:descricao], placeholder: 'Digite o nome da transportadora..', class: 'form-control') %>
+
+		</div>
+		</div>
+		<br />
+		<%= submit_tag "Consultar", class: 'btn btn-success' %>
+<% end %>
+
+<%= link_to t('.new', :default => t("helpers.links.new")), new_shipping_path, :class => 'btn btn-primary' %>
+</div>
+</div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+
+      <th><%= model_class.human_attribute_name('nome') %></th>
+      <th><%= model_class.human_attribute_name('fone') %></th>
+      <th><%= model_class.human_attribute_name('cpf / cnpj') %></th>
+      <th><%= model_class.human_attribute_name("Inscriçao estadual") %></th>
+
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @shippings.each do |shipping| %>
+      <tr>
+        <td><%= link_to shipping.name, shipping_path(shipping) %></td>
+        <td><%= shipping.phone %></td>
+        <% if shipping.cpf.present? %>
+        <td><%= shipping.cpf %></td>
+        <% else %>
+        <td><%= shipping.cnpj %></td>
+        <% end %>
+        <td><%= shipping.inscricao %></td>
+
+        <td>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_shipping_path(shipping), :class => 'btn btn-default btn-xs' %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      shipping_path(shipping),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+Total de Transportadoras cadastradas: <b><%= @total_shippings %></b>

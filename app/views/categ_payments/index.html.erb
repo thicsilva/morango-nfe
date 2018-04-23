@@ -1,0 +1,32 @@
+<%- model_class = CategPayment -%>
+<div class="page-header">
+  <h1>Categorias de despesa</h1>
+  <%= link_to t('.new', :default => t("helpers.links.new")),
+              new_categ_payment_path,
+              :class => 'btn btn-primary' %>
+</div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name('nome') %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @categ_payments.each do |categ_payment| %>
+      <tr>
+        <td><%= link_to categ_payment.name, categ_payment_path(categ_payment) %></td>
+        <td>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_categ_payment_path(categ_payment), :class => 'btn btn-default btn-xs' %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      categ_payment_path(categ_payment),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

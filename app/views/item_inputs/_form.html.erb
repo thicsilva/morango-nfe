@@ -1,0 +1,61 @@
+<h5>Adicionar item</h5>
+
+<script>
+$(document).ready(function(){
+$('#quant').on('keyup',function(){
+     var total = $('#quant').val() * $('#cost_value').val();
+     $('#t_cost').val(total.toFixed(2));
+             
+ 
+});
+});
+</script>
+
+
+<%= form_for ([@header_input, @header_input.item_inputs.build]) do |f| %>
+
+<% if @header_input.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@header_input.errors.count, "error") %> prohibited this heritage from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @header_input.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+	
+	<div class="col-lg-3">
+    <% if @header_input.status == 'ABERTA' %>
+    <%= f.collection_select(:product_id, @products, :id, :name, {include_blank: 'Selecione o item'},:class => 'form-control') %>
+    <% else %>
+    <%= f.collection_select(:product_id, @products, :id, :name, {include_blank: 'Selecione o item'},:class => 'form-control', disabled: true) %>
+    <% end %>
+    </div>
+ 	
+    <div class="col-lg-2">
+	<%= f.text_field :cost_value, class: "form-control", placeholder: "R$ custo", id: 'cost_value' -%>
+	</div>
+	    
+    <div class="col-lg-2">
+	<%= f.number_field :qnt, class: "form-control", placeholder: "qnt", id: 'quant' -%>
+	</div>
+	
+	<div class="col-lg-2">	
+	<%= f.text_field :total_value_cost, class: "form-control", placeholder: "T custo", id: 't_cost', readonly: true -%>
+	</div>
+			
+	<% if @header_input.status == 'ABERTA' %>
+    <%= f.submit 'Adicionar', class: 'btn btn-primary', id: 'add' %>
+    <% else %>
+    <%= f.submit 'Adicionar', disabled: true, class: 'btn btn-primary', id: 'add' %>
+    <% end %>
+    
+<% end %>
+
+
+

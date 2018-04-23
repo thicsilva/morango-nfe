@@ -1,0 +1,58 @@
+<!-- CSS PARA REMOVER O BOTÃO IMPRIMIR NA VIEW DE IMPRESSÃO -->
+  <style type="text/css">
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+}
+</style>
+
+<!-- INSERI ESSA VERIFICAÇÃO DE AMBIENTE PRA CARREGAR OS PDF'S TANTO LOCALMENTE QUANTO NO HEROKU -->
+<% if Rails.env.development? %>
+  <style type="text/css">
+    <%= Rails.application.assets.find_asset('application.css').to_s.html_safe %>
+</style>
+<% end %>
+<div class="container-fluid">
+<%- model_class = Client -%>
+<br />
+<%= image_tag "logo_mini.png" %>
+<div class="page-header">
+
+  <h2>Relatório geral de Produtos</h2>
+  Gerado em: <%= Time.now.strftime("%d/%m/%Y %H:%M") %> <br />
+  <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+
+  </div>
+</div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+
+      <th><%= model_class.human_attribute_name("nome") %></th>
+      <th><%= model_class.human_attribute_name("Valor custo") %></th>
+      <th><%= model_class.human_attribute_name("Atualizado em") %></th>
+      <th><%= model_class.human_attribute_name("unidade de medida") %></th>
+      <th><%= model_class.human_attribute_name("cod NCM") %></th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <% @products.each do |product| %>
+      <tr>
+
+        <td><%= product.name %></td>
+                <td><%= product.cost_value %></td>
+        <td><%= product.data_atualizacao_custo %></td>
+        <td><%= product.unidade_comercial %></td>
+        <td><%= product.codigo_ncm %></td>
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+Total de produtos: <b><%= @total_products %></b>
+
+</div>

@@ -1,0 +1,79 @@
+<!-- CABEÇALHO DA O.S -->
+
+<%- model_class = Invoice -%>
+<div class="page-header">
+  <h1><%= @invoice.type_invoice %> Nº<font color="red"><%= @invoice.id %></font></h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name('tipo venda') %>:</strong></dt>
+  <dd><%= @invoice.type_invoice %> - <b><%= @invoice.data_prevenda %></b></dd>
+  <dt><strong><%= model_class.human_attribute_name('cliente') %>:</strong></dt>
+  <dd><%= @invoice.client.name %>&nbsp;
+  <strong><%= model_class.human_attribute_name('itinerário') %>:</strong>
+  <%= @invoice.client.route.name %></dd>
+  <dt><strong><%= model_class.human_attribute_name('endereço') %>:</strong></dt>
+  <dd><%= @invoice.client.address %>&nbsp;
+  <strong><%= model_class.human_attribute_name('bairro') %>:</strong>
+  <%= @invoice.client.neighborhood %><strong>&nbsp;
+  <%= model_class.human_attribute_name('cidade') %>:</strong>
+  <%= @invoice.client.city %>&nbsp;
+  <strong><%= model_class.human_attribute_name('UF') %>:</strong>
+  <%= @invoice.client.state %>&nbsp;
+  <strong><%= model_class.human_attribute_name('Cep') %>:</strong>
+  <%= @invoice.client.zipcode %>&nbsp;</dd>
+  <dt><strong><%= model_class.human_attribute_name('Cnpj') %>:</strong></dt>
+  <dd><%= @invoice.client.cnpj %>&nbsp;
+  <strong><%= model_class.human_attribute_name('fone') %>:</strong>
+  <%= @invoice.client.phone %>&nbsp;
+  <strong><%= model_class.human_attribute_name('celular') %>:</strong>
+  <%= @invoice.client.cellphone %>&nbsp;
+  <strong><%= model_class.human_attribute_name('email') %>:</strong>
+  <%= @invoice.client.email %></dd>
+
+</dl>
+
+<%= link_to t('.back', :default => t("helpers.links.back")),
+              invoices_path, :class => 'btn btn-default'  %>
+              
+<%= link_to t('.edit', :default => t("helpers.links.edit")), edit_invoice_path(@invoice), :class => 'btn btn-default' %>
+
+<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              invoice_path(@invoice),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %>
+<% if @invoice.type_invoice == "Orçamento" && @invoice.form_receipt != 'NÃO INFORMADO' %>
+<%= link_to 'Converter em O.S', convert_invoice_invoice_path(@invoice.id), :class => 'btn btn-success'  %>
+<% end %>
+
+<% if @invoice.type_invoice == "Venda" && @invoice.status == "Á RECEBER" %>
+<%= link_to 'Gerar NFE', gerar_nfe_invoice_path(:id => @invoice.id), :class => 'btn btn-success', data: {disable_with: "<i class='fa fa-spinner fa-pulse fa-spin'></i> Processando...".html_safe} %>
+<%end%>
+
+<!-- CARREGA AQUI O FORM MODAL PRA CADASTRAR PRODUTO NOVO -->
+<div id="myModal" class="modal fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+
+ <div class="page-header">
+
+ 	<!-- EXIBE A QUANTIDADE DE ITENS NA O.S -->
+ 	<h2><%= @invoice.items.count %> Itens / Total geral: <%= @total_items %> </h2>
+ 	<b>Lucro geral: <%= @lucro_total %></b>
+ </div>
+    <!-- EXIBE OS ITENS NA O.S -->
+ <%= render "items/item" %>
+ <%= render "items/form" %>
+
+  <%= render "invoices/form_receipt" %>
+
+ <!--
+ <p>
+ 	<% if @invoice.status != 'FINALIZADA' %>
+   	<%= button_to "Finalizar", baixar_invoice_path(@invoice , format: 'pdf'), class: "btn btn-warning btn-lg", data: { confirm: "Deseja finalizar esta O.S?" } %>
+ 	<% else %>
+ 	<%= button_to "Finalizar", baixar_invoice_path(@invoice , format: 'pdf'), class: "btn btn-warning btn-lg" %>
+ 	<% end %>
+ <p>
+</p> -->
+
+<p>

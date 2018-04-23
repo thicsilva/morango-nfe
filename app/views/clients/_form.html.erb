@@ -1,0 +1,333 @@
+<!-- PERMITE SOMENTE NUMEROS E PONTOS NO CAMPO DA INSCRIÇÃO ESTADUAL -->
+<script>
+$(document).ready(function(){
+		$("#inscricao-estadual").keyup(function() {
+		var $this = $( this ); //armazeno o ponteiro em uma variavel
+		var valor = $this.val().replace(/[^0123456789.]+/g,'');
+		$this.val( valor );
+	});
+	});
+</script>
+
+<script>
+$(document).ready(function(){
+$('#cpf').on('click',function(){
+
+	if ($('#cnpj').val()) {
+		$("#cpf").val('');
+        alert('Você só pode informar um CPF ou um CNPJ!')
+    } else {
+    	$('#add').prop('disabled', false);
+    }
+});
+
+$('#cpf').on('keyup',function(){
+
+	if ($('#cnpj').val()) {
+		$("#cpf").val('');
+        alert('Você só pode informar um CPF ou um CNPJ!')
+    } else {
+    	$('#add').prop('disabled', false);
+    }
+});
+});
+</script>
+
+<script>
+$(document).ready(function(){
+$('#cnpj').on('click',function(){
+
+	if ($('#cpf').val()) {
+		$("#cnpj").val('');
+        alert('Você só pode informar um CPF ou um CNPJ!')
+    } else {
+    	$('#add').prop('disabled', false);
+    }
+});
+
+$('#cnpj').on('keyup',function(){
+
+	if ($('#cpf').val()) {
+		$("#cnpj").val('');
+        alert('Você só pode informar um CPF ou um CNPJ!')
+    } else {
+    	$('#add').prop('disabled', false);
+    }
+});
+});
+</script>
+
+<!-- PARA CARREGAR O ENDEREÇO COM BASE NO CEP -->
+    <!-- Adicionando JQuery -->
+    <script>
+        $(document).ready(function() {
+
+            function limpa_formulário_cep() {
+                // Limpa valores do formulário de cep.
+                $("#rua").val("");
+                $("#bairro").val("");
+                $("#cidade").val("");
+                $("#uf").val("");
+                $("#ibge").val("");
+            }
+
+            //Quando o campo cep perde o foco.
+            $("#cep").blur(function() {
+
+                //Nova variável "cep" somente com dígitos.
+                var cep = $(this).val().replace(/\D/g, '');
+
+                //Verifica se campo cep possui valor informado.
+                if (cep != "") {
+
+                    //Expressão regular para validar o CEP.
+                    var validacep = /^[0-9]{8}$/;
+
+                    //Valida o formato do CEP.
+                    if(validacep.test(cep)) {
+
+                        //Preenche os campos com "..." enquanto consulta webservice.
+                        $("#rua").val("...")
+                        $("#bairro").val("...")
+                        $("#cidade").val("...")
+                        $("#uf").val("...")
+                        $("#ibge").val("...")
+
+                        //Consulta o webservice viacep.com.br/
+                        $.getJSON("//viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+
+                            if (!("erro" in dados)) {
+                                //Atualiza os campos com os valores da consulta.
+                                $("#rua").val(dados.logradouro);
+                                $("#bairro").val(dados.bairro);
+                                $("#cidade").val(dados.localidade);
+                                $("#uf").val(dados.uf);
+                                $("#ibge").val(dados.ibge);
+                            } //end if.
+                            else {
+                                //CEP pesquisado não foi encontrado.
+                                limpa_formulário_cep();
+                                alert("CEP não encontrado.");
+                            }
+                        });
+                    } //end if.
+                    else {
+                        //cep é inválido.
+                        limpa_formulário_cep();
+                        alert("Formato de CEP inválido.");
+                    }
+                } //end if.
+                else {
+                    //cep sem valor, limpa formulário.
+                    limpa_formulário_cep();
+                }
+            });
+        });
+
+    </script>
+
+<%= form_for @client, :html => { :class => "form-horizontal client" } do |f| %>
+
+  <% if @client.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@client.errors.count, "error") %> prohibited this client from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @client.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label "Nome", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-5">
+      <%= f.text_field :name, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:name) %>
+  </div>
+
+	<div class="form-group">
+    <%= f.label "Rota", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.collection_select(:route_id, @routes, :id, :name, {include_blank: 'Selecione:'}, :class => 'form-control') %>
+    </div>
+    <%=f.error_span(:name) %>
+  </div>
+
+	<div class="form-group">
+<%= f.label "Posição entrega", :class => 'control-label col-lg-2' %>
+<div class="col-lg-1">
+	<%= f.text_field :position, :class => 'form-control', id: 'qnt', maxlength: '3' %>
+</div>
+<%=f.error_span(:position) %>
+</div>
+
+      <div class="form-group">
+    <%= f.label "Cpf", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :cpf, :class => 'form-control', id: 'cpf' %>
+    </div>
+    <%=f.error_span(:cpf) %>
+  </div>
+
+    <div class="form-group">
+    <%= f.label "Cnpj", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :cnpj, :class => 'form-control', id: 'cnpj' %>
+    </div>
+    <%=f.error_span(:cnpj) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Cep", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.text_field :zipcode, :class => 'form-control', id: 'cep', :onblur=> "pesquisacep(this.value);" %>
+    </div>
+    <%=f.error_span(:zipcode) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Endereço", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-5">
+      <%= f.text_field :address, :class => 'form-control', id: 'rua' %>
+    </div>
+    <%=f.error_span(:address) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Número", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-1">
+      <%= f.text_field :numero, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:numero) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label 'complemento', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :complemento, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:complemento) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Bairro", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+      <%= f.text_field :neighborhood, :class => 'form-control', id: 'bairro' %>
+    </div>
+    <%=f.error_span(:neighborhood) %>
+  </div>
+
+    <div class="form-group">
+    <%= f.label 'cód município', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.text_field :cod_municipio, :class => 'form-control', maxlength: '7', id: 'ibge',readonly: true %>
+    </div>
+    <%=f.error_span(:cod_municipio) %>
+  </div>
+
+    <div class="form-group">
+    <%= f.label 'município', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+      <%= f.text_field :city, :class => 'form-control', id: 'cidade' %>
+    </div>
+    <%=f.error_span(:city) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'UF', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-1">
+      <%= f.text_field :state, :class => 'form-control', id: 'uf' %>
+    </div>
+    <%=f.error_span(:state) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Fone", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.text_field :phone, :class => 'form-control', id: 'phone' %>
+    </div>
+    <%=f.error_span(:phone) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "Celular", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.text_field :cellphone, :class => 'form-control', id: 'celphone' %>
+    </div>
+    <%=f.error_span(:cellphone) %>
+  </div>
+
+   <%= f.hidden_field :codigo_pais, :value=> '1058' %>
+
+  <%= f.hidden_field :pais, :value=> 'Brasil' %>
+
+  <div class="form-group">
+    <%= f.label 'Indicador IE', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+    <%= f.select(:indicador_inscr, options_for_select([["Contribuinte ICMS (informar a IE do destinatário)","1"],["Contribuinte isento de Inscrição no cadastro de Contribuintes do ICMS","2"], ["Não Contribuinte, que pode ou não possuir Inscrição Estadual no Cadastro de Contribuintes do ICMS","9"]], @client.indicador_inscr), {include_blank: 'Selecione'}, :class => 'form-control') %>
+    </div>
+    <%=f.error_span(:indicador_inscr) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'Inscrição estadual', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.text_field :inscr_est, :class => 'form-control',maxlength: 15, id: 'inscricao-estadual' %>
+    </div>
+    <%=f.error_span(:inscr_est) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'inscrição suframa', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :inscr_suframa, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:inscr_suframa) %>
+  </div>
+
+
+  <div class="form-group">
+    <%= f.label "Nome Contato", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :contact_name, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:contact_name) %>
+  </div>
+
+
+  <div class="form-group">
+    <%= f.label "Email", :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+      <%= f.text_field :email, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:email) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label 'Inscrição municipal', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :inscr_municipal, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:inscr_municipal) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label 'vendedor', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+      <%= f.collection_select(:seller_id, @sellers, :id, :name, {include_blank: 'Selecione o Vendedor:'},:class => 'form-control') %>
+    </div>
+    <%=f.error_span(:seller_id) %>
+    </div>
+
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <%= f.submit 'Salvar', data: { disable_with: "Processando..." }, :class => 'btn btn-primary' %>
+      <%= link_to "Cancelar",
+                clients_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+
+<% end %>

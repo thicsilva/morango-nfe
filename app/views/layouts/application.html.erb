@@ -1,0 +1,329 @@
+<!-- PARA REMOVER AS SCROLLBARS SOMENTE NA PAGINA INICIA -->
+<% if !logged_in? %>
+<style>
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+</style>
+<% end %>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="D&D Support Service - Consultoria em T.I and God ever!!!">
+    <link rel="icon" href="../../images/favicon.ico">
+
+  <title>DsoftWeb</title>
+
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+
+  <%= javascript_include_tag "https://www.google.com/jsapi", "chartkick" %>
+  <%= stylesheet_link_tag '//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css' %>
+
+  <!-- ESSE LINK ABAIXO É PARA ESCONDER A MENSAGEM DO AUTOCOMPLETAR NA ADIÇÃO DO PRODUTO E DEIXAR MAIS BONITO -->
+  <!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.0/themes/smoothness/jquery-ui.css" /> -->
+</head>
+
+<!-- ESSE SCRIPT É PARA VERIFICAR ERROS DE JAVASCRIPT - É MUITO IMPORTANTE
+<script>
+	window.onerror = function (errorMsg, url, lineNumber, column, errorObj) {
+    alert('Error: ' + errorMsg + ' Script: ' + url + ' Line: ' + lineNumber
+    + ' Column: ' + column + ' StackTrace: ' +  errorObj);
+}
+</script>
+-->
+<body>
+    <!-- Dash Navbar Top
+    Available versions: dnl-visible, dnl-hidden -->
+    <nav class="navbar navbar-static-top dash-navbar-top dnl-hidden">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#dnt-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="fa fa-ellipsis-v"></span>
+          </button>
+          <button class="dnl-btn-toggle">
+            <span class="fa fa-bars"></span>
+          </button>
+          <div class="navbar-brand" > Dsoft <span>WebApp</span></div>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="dnt-collapse">
+          <!-- This dropdown is for avatar -->
+          <ul class="nav navbar-nav navbar-right navbar-avatar">
+
+            <li class="dropdown">
+           <% if !logged_in? %>
+	           <%= form_tag('/login', class: "navbar-form navbar-right") do %>
+				         <div class="form-group">
+				           <%= text_field_tag :email, nil, placeholder: 'Email', class: 'form-control' %>
+			           </div>
+          			 <div class="form-group">
+          			 <%= password_field_tag :password, nil, placeholder: 'Senha', class: 'form-control' %>
+          			 </div>
+				         <%= submit_tag "Login", class: 'btn btn-success' %>&nbsp;
+			     <% end %>
+
+            </li>
+          </ul>
+			<ul class="nav navbar-nav navbar-right">
+              <li><%= link_to "Home", root_path, class: 'form_control' %></li>
+              <li><%= link_to "Contato", contact_path, class: 'form_control' %></li>
+
+                        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav> <!-- /.navbar -->
+     <% else %>
+
+     <%= link_to logout_path, method: :delete do %>
+   <%= image_tag "logo.png", title: 'LogOut' , class: "dnt-avatar" %>
+<% end %>
+
+          </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav> <!-- /.navbar -->
+
+    <!-- Dash Navbar Left
+    Available versions: dnl-visible, dnl-hidden -->
+    <div class="dash-navbar-left dnl-hidden">
+      <p class="dnl-nav-title">Cadastros</p>
+      <ul class="dnl-nav">
+        <li>
+          <a class="collapsed" data-toggle="collapse" href="#collapseStatistics" aria-expanded="false" aria-controls="collapseStatistics">
+            <span class="glyphicon glyphicon-user"></span>
+            <span class="dnl-link-text">Cadastros gerais</span>
+            <span class="fa fa-angle-up dnl-btn-sub-collapse"></span>
+          </a>
+          <!-- Dropdown level one -->
+          <ul class="dnl-sub-one collapse" id="collapseStatistics">
+          	<% if current_user.type_access == 'MASTER' %>
+            <li>
+             <%= link_to '<span class="glyphicon glyphicon-globe dnl-link-icon"></span> Configurações'.html_safe, expire_dates_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+
+            <% if current_user.ccli == true %>
+            <li>
+             <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Clientes'.html_safe, clients_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+
+          	<% if current_user.cforn == true %>
+            <li>
+             <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Fornecedores'.html_safe, suppliers_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+            <%if current_user.ccateg == true %>
+            <li>
+             <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Categoria de despesas'.html_safe, categ_payments_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+          	<%if current_user.cprod == true %>
+            <li>
+             <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Produtos'.html_safe, products_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+            <%if current_user.c_route == true %>
+            <li>
+              <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Rotas'.html_safe, routes_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+            <%if current_user.shipping == true %>
+            <li>
+			      <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Transportadoras'.html_safe, shippings_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+            <%if current_user.cvend == true %>
+            <li>
+			      <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Vendedores'.html_safe, sellers_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+
+            <% if current_user.cuser == true && current_user.type_access == 'User' %>
+            <li>
+              <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Usuários'.html_safe, editar_user_path, class: 'dnl-link-text' %>
+            </li>
+            <% elsif current_user.cuser == true && current_user.type_access != 'User' %>
+            <li>
+              <%= link_to '<span class="glyphicon glyphicon-tags dnl-link-icon"></span> Usuários'.html_safe, users_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+          </ul>
+        </li>
+
+      <p class="dnl-nav-title">Movimentações</p>
+      <ul class="dnl-nav">
+
+        <%if current_user.minput == true %>
+        <li>
+          <%= link_to '<span class="glyphicon glyphicon-th-list dnl-link-icon"></span> Entrada de compras'.html_safe, header_inputs_path, class: 'dnl-link-text' %>
+        </li>
+        <% end %>
+
+        <%if current_user.mos == true %>
+        <li>
+          <%= link_to '<span class="glyphicon glyphicon-check dnl-link-icon"></span> Pré / Vendas / NFe'.html_safe, invoices_path, class: 'dnl-link-text' %>
+        </li>
+        <% end %>
+
+        <%if current_user.mconsul_nfe == true %>
+        <li>
+          <%= link_to '<span class="glyphicon glyphicon-search dnl-link-icon"></span>Consultar status NFe'.html_safe, consulta_nfe_path, class: 'dnl-link-text' %>
+        </li>
+        <% end %>
+
+        <%if current_user.mcancel_number == true %>
+        <li>
+          <%= link_to '<span class="glyphicon glyphicon-remove dnl-link-icon"></span> Cancelar num NFe'.html_safe, cancel_numerals_path, class: 'dnl-link-text' %>
+        </li>
+        <% end %>
+
+        <% if current_user.mupload == true %>
+        <li>
+          <%= link_to '<span class="fa fa-upload dnl-link-icon"></span> Upload de Arquivos'.html_safe, documents_path, class: 'dnl-link-text' %>
+        </li>
+        <% end %>
+
+
+      <p class="dnl-nav-title">Financeiro</p>
+      <ul class="dnl-nav">
+        <%if current_user.fpag == true %>
+        <li>
+            <%= link_to '<span class="glyphicon glyphicon-usd"></span> Contas á Pagar'.html_safe, payments_path, class: 'dnl-link-text' %>
+        </li>
+        <% end %>
+        <%if current_user.frec == true %>
+        <li>
+            <%= link_to '<span class="fa fa-history dnl-link-icon"></span> Contas á Receber'.html_safe, receipts_path, class: 'dnl-link-text' %>
+        </li>
+        <% end %>
+      </ul>
+
+      <p class="dnl-nav-title">Relatórios</p>
+      <ul class="dnl-nav">
+        <li>
+          <a class="collapsed" data-toggle="collapse" href="#collapseCategoryAll" aria-expanded="false" aria-controls="collapseCategoryAll">
+            <span class="glyphicon glyphicon-list-alt"></span>
+            <span class="dnl-link-text">Relatórios Gerais</span>
+            <span class="fa fa-angle-up dnl-btn-sub-collapse"></span>
+          </a>
+          <!-- Dropdown level one -->
+          <ul class="dnl-sub-one collapse" id="collapseCategoryAll">
+            <%if current_user.rcateg == true %>
+            <li>
+                <%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Categoria de despesas'.html_safe, report_categ_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+
+            <%if current_user.rcli == true %>
+            <li>
+                <%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Clientes'.html_safe, report_client_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+
+            <%if current_user.rfecha == true %>
+            <li>
+        <%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Fechamento geral'.html_safe, report_fechamento_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+
+            <%if current_user.rforn == true %>
+            <li>
+				<%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Fornecedores'.html_safe, report_supplier_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+            <%if current_user.rforn == true %>
+            <li>
+				<%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Notas fiscais'.html_safe, report_nfe_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+
+            <%if current_user.rprod == true %>
+            <li>
+				<%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Produtos'.html_safe, report_product_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+            <%if current_user.rprod == true %>
+            <li>
+				<%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Vendedores'.html_safe, report_seller_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+            <%if current_user.minput == true %>
+            <li>
+				<%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Entrada de Compras'.html_safe, report_input_path, class: 'dnl-link-text' %>
+            </li>
+            <% end %>
+            <%if current_user.r_compra == true %>
+                <li>
+    				<%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Analíse geral'.html_safe, rpt_compras_path, class: 'dnl-link-text' %>
+                </li>
+            <% end %>
+
+            <%if current_user.mos == true %>
+                <li>
+    				<%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Vendas'.html_safe, report_invoice_path, class: 'dnl-link-text' %>
+                </li>
+            <% end %>
+            <%if current_user.rpag == true %>
+                <li>
+    				<%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Contas á Pagar'.html_safe, report_payment_path, class: 'dnl-link-text' %>
+                </li>
+            <% end %>
+            <%if current_user.rrec == true %>
+                <li>
+    				<%= link_to '<span class="fa fa-file-text dnl-link-icon"></span> Contas á Receber'.html_safe, report_receipt_path, class: 'dnl-link-text' %>
+                </li>
+            <% end %>
+          </ul>
+        </li>
+
+      </ul>
+    </div> <!-- /.dash-navbar-left -->
+
+    <% end %>
+
+    <!-- Enter your page content below here
+    Available navbar effects: dnl-push, dnl-overlay
+    Available navbar versions: dnl-visible, dnl-hidden
+    Available content effects: content-opacity -->
+
+    <!-- SE NÃO ESTIVER LOGADO -->
+    <% if !logged_in? %>
+     <div class="content-wrap dnl-hidden" data-effect="dnl-push">
+      <%= yield %>
+     </div>
+    <% else %>
+    <!-- SE JÁ ESTIVER LOGADO -->
+    <div class="content-wrap dnl-hidden" data-effect="dnl-push">
+       <div class="container-fluid">
+		<div class="container">
+	        <%= yield %>
+      </div>
+     </div> <!-- /.content-wrap -->
+    <% end %>
+
+
+    <!-- Le javaScript
+    ================================================== -->
+
+    <%= javascript_include_tag 'demo', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'dash', 'data-turbolinks-track' => true %>
+
+    <%= render 'sweetify/alert' %>
+
+    <!-- Placed at the end of the document so the pages load faster -->
+
+
+  </body>
+</html>

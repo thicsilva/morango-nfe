@@ -1,0 +1,28 @@
+<%- model_class = Product -%>
+<div class="page-header">
+  <h1>Produto</h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name("nome") %>:</strong></dt>
+  <dd><%= @product.name %></dd>
+  <dt><strong><%= model_class.human_attribute_name("Atualizado em") %>:</strong></dt>
+  <dd><%= @product.data_atualizacao_custo %></dd>
+  <dt><strong><%= model_class.human_attribute_name("Valor custo") %>:</strong></dt>
+  <dd><%= @product.cost_value %></dd>
+  <dt><strong><%= model_class.human_attribute_name("Unid medida") %>:</strong></dt>
+  <dd><%= @product.unidade_comercial %></dd>
+  <dt><strong><%= model_class.human_attribute_name("codigo NCM") %>:</strong></dt>
+  <dd><%= @product.codigo_ncm %></dd>
+
+</dl>
+
+<%= link_to "Voltar",
+              products_path, :class => 'btn btn-default'  %>
+<%= link_to "Editar",
+              edit_product_path(@product), :class => 'btn btn-default' %>
+<%= link_to "Excluir",
+              product_path(@product),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %>

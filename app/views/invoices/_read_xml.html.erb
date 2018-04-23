@@ -1,0 +1,36 @@
+<!--
+<style>
+	#myModal .modal-dialog  {width:75%;}
+</style>
+-->
+
+<!-- Modal -->
+<div data-toggle="modal" data-target="myModal" >
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Leitor de arquivos XML's <%= image_tag('xml.png') %></h4>
+      </div>
+      
+	  <h5>&nbsp;&nbsp;&nbsp;&nbsp;<b>Selecione o arquivo XML desejado e clique em Abrir</b></h5> 
+	      
+    <div class="modal-body">
+    	
+    	<%= form_tag(view_xml_path, method: :get) do %>
+
+		<div class="form-group">			  
+		<div class="row">
+			  <div class="col-lg-3">	  
+		<%= label_tag :attachment %>
+		<%= file_field_tag :attachment %>
+		</div>
+		</div>
+		<br />	
+		<%= submit_tag "Consultar", class: 'btn btn-success' %>
+<% end %>
+  	   	
+	</div>
+<hr />

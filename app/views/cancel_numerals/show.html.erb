@@ -1,0 +1,30 @@
+<%- model_class = CancelNumeral -%>
+<div class="page-header">
+  <h1>Inutilização de numeração - NF-e</h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name('cnpj') %>:</strong></dt>
+  <dd><%= @cancel_numeral.cnpj %></dd>
+  <dt><strong><%= model_class.human_attribute_name('usuário') %>:</strong></dt>
+  <dd><%= @cancel_numeral.user %></dd>
+  <dt><strong><%= model_class.human_attribute_name('série') %>:</strong></dt>
+  <dd><%= @cancel_numeral.serie %></dd>
+  <dt><strong><%= model_class.human_attribute_name('numeração unicial') %>:</strong></dt>
+  <dd><%= @cancel_numeral.inicial_number %></dd>
+  <dt><strong><%= model_class.human_attribute_name('numeração final') %>:</strong></dt>
+  <dd><%= @cancel_numeral.final_number %></dd>
+  <dt><strong><%= model_class.human_attribute_name('justificativa') %>:</strong></dt>
+  <dd><%= @cancel_numeral.justificativa %></dd>
+</dl>
+
+<%= link_to t('.back', :default => t("helpers.links.back")),
+              cancel_numerals_path, :class => 'btn btn-default'  %>
+              <!--
+<%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_cancel_numeral_path(@cancel_numeral), :class => 'btn btn-default' %>
+<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              cancel_numeral_path(@cancel_numeral),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :class => 'btn btn-danger' %> -->

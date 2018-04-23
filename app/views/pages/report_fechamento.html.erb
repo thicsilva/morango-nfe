@@ -1,0 +1,126 @@
+<!-- CSS PARA REMOVER O BOTÃO IMPRIMIR NA VIEW DE IMPRESSÃO -->
+  <style type="text/css">
+	@media print {
+    #printbtn {
+        display :  none;
+    }
+}
+</style>
+
+<!-- INSERI ESSA VERIFICAÇÃO DE AMBIENTE PRA CARREGAR OS PDF'S TANTO LOCALMENTE QUANTO NO HEROKU -->
+<% if Rails.env.development? %>
+  <style type="text/css">
+    <%= Rails.application.assets.find_asset('application.css').to_s.html_safe %>
+</style>
+<% end %>
+
+
+
+<%- model_class = Client -%>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+
+<%= image_tag "logo_mini.png" %>
+<div class="page-header">
+  <h3>Relatório geral de Fechamento</h3>
+
+  Periodo: <%= @datainicial %> até <%=@datafinal %>
+
+  <%= form_tag(report_fechamento_path, method: :get) do %>
+	<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+			  <%= select_tag(:tipo_consulta, options_for_select([['Á RECEBER \ Á PAGAR', 'Á RECEBER \ Á PAGAR'], ['RECEBIDAS \ PAGAS', 'RECEBIDAS \ PAGAS']],params[:tipo_consulta]), include_blank: 'Selecione:', class: 'form-control', id: 'printbtn')%>
+			</div>
+			</div>
+		<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-2">
+		<%= date_field_tag(:date1, params[:date1], placeholder: 'data inicial', class: 'form-control', id: 'printbtn') %>
+		<%= date_field_tag(:date2, params[:date2], placeholder: 'data final', class: 'form-control', id: 'printbtn') %>
+		</div>
+		</div>
+
+		<br />
+		<%= submit_tag "Consultar", class: 'btn btn-success', id: 'printbtn' %>
+<% end %>
+
+    <button type="button" id ="printbtn" class="btn btn-success", onclick ="window.print();return false;">Imprimir</button>
+
+	<%= link_to 'Análise Anual por mês', report_mensal_path, class: 'btn btn-warning' %>
+
+	<h4><font color="red"><%= flash_messages %></font></h4>
+
+
+  <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Total de Custo <%= @status_r %>: <strong>R$ <%= number_with_precision(@total_custo, precision: 2) %></strong></h3>
+  </div><!-- fim .panel-heading -->
+  </div>
+
+  <div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Total de Vendas <%= @status_r %>: <strong>R$ <%= number_with_precision(@total_receipts, precision: 2) %></strong></h3>
+  </div><!-- fim .panel-heading -->
+  </div>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Total de Despesas <%= @status_p %>: <strong>R$ <%= number_with_precision(@total_payments, precision: 2) %></strong></h3>
+  </div><!-- fim .panel-heading -->
+  </div>
+
+
+  <div class="panel panel-default">
+  <div class="panel-heading">
+     <h3 class="panel-title">Lucro Bruto <strong>R$ <%= number_with_precision(@total_lucro_bruto, precision: 2) %></strong></h3>
+   </div><!-- fim .panel-heading -->
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+  	<% if @total_liquido.to_f < 0 %>
+    <h3 class="panel-title">Lucro Liquido: <font color="red"><strong>R$ <%= @total_liquido %></strong></font></h3>
+    <% else %>
+    <h3 class="panel-title">Lucro Liquido: <font color="blue"><strong>R$ <%= @total_liquido %></strong></font></h3>
+    <% end %>
+  </div><!-- fim .panel-heading -->
+  </div>
+</div>
+
+Total de produtos vendidos no periodo informado: <br />
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+
+
+      <th><%= model_class.human_attribute_name('Produto') %></th>
+      <th><%= model_class.human_attribute_name('Quant Total') %></th>
+      <th><%= model_class.human_attribute_name('Total Custo R$') %></th>
+      <th><%= model_class.human_attribute_name('Total Venda R$') %></th>
+      <th><%= model_class.human_attribute_name('Total Lucro R$') %></th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <% @total_items.each do |item| %>
+
+    <tr>
+
+
+        <td><%= item.product.name %></td>
+        <td><%= item.qnt %></td>
+        <td><%= number_with_precision(item.total_value_cost, precision: 2) %></td>
+        <td><%= number_with_precision(item.total_value_sale, precision: 2) %></td>
+        <td><%= number_with_precision(item.profit_sale, precision: 2) %></td>
+
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+  </div>
+</div>
+</div>

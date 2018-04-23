@@ -1,0 +1,71 @@
+<%- model_class = HeaderInput -%>
+<div class="page-header">
+  <h1>Entrada de Compras</h1>
+  Periodo: <%= @datainicial %> até <%=@datafinal %><br />
+  <% if @supplier.present? %>
+  Fornecedor: <%= @supplier.name %>
+  <% end %>
+<%= form_tag(header_inputs_path, method: :get) do %>
+
+<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-3">
+		<%= select_tag(:supplier, options_from_collection_for_select(@suppliers, "id", "name",params[:supplier]), include_blank: 'Selecione o fornecedor:', class: 'form-control', id: 'printbtn')%>
+		  	  </div>
+		</div>
+
+<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-2">
+		<%= date_field_tag(:date1, params[:date1], placeholder: 'data inicial', class: 'form-control', id: 'printbtn') %>
+		</div>
+		</div>
+
+<div class="form-group">
+		<div class="row">
+			  <div class="col-lg-2">
+		<%= date_field_tag(:date2, params[:date2], placeholder: 'data final', class: 'form-control', id: 'printbtn') %>
+		</div>
+		</div>
+	</div>
+		<%= submit_tag "Consultar", class: 'btn btn-success', id: 'printbtn' %>
+<% end %>
+<%= link_to t('.new', :default => t("helpers.links.new")), new_header_input_path, :class => 'btn btn-primary' %>
+</div>
+</div>
+</div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name('id') %></th>
+      <th><%= model_class.human_attribute_name('fornecedor') %></th>
+      <th><%= model_class.human_attribute_name('total R$') %></th>
+      <th><%= model_class.human_attribute_name('status') %></th>
+      <th><%= model_class.human_attribute_name('criado em') %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @header_inputs.each do |header_input| %>
+      <tr>
+        <td><%= link_to header_input.id, header_input_path(header_input) %></td>
+        <td><%= header_input.supplier.name %></td>
+        <td><%= header_input.item_inputs.sum(:total_value_cost) %></td>
+        <td><%= header_input.status %></td>
+        <td><%= header_input.created_at %></td>
+        <td>
+        <% if header_input.status == 'ABERTA' %>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_header_input_path(header_input), :class => 'btn btn-default btn-xs' %>
+        <% end %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      header_input_path(header_input),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

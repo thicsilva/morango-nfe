@@ -1,0 +1,44 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th> <%= 'produto' %></th>
+      <th><%= 'qnt' %></th>
+      <th><%= 'val unit R$' %></th>
+      <th><%= 'total R$' %></th>
+      <th><%= 'total lucro R$' %></th>
+
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+
+    </tr>
+  </thead>
+  <tbody>
+
+ 	<% @invoice.items.each do |item| %>
+        <tr>
+        <td><%= item.product.name %></td>
+        <td><%= item.qnt %></td>
+        <td><%= item.sale_value %></td>
+        <td><%= item.total_value_sale %></td>
+        <% if item.profit_sale.present? %>
+        <td><%= item.profit_sale %></td>
+        <% else %>
+        <td>Não informado</td>
+        <% end %>
+
+         <% if @invoice.status != 'NF EMITIDA' %>
+
+        <td><%= link_to 'Informar tributos', editar_tributo_path(:id => item.id), {:remote => true, 'data-toggle' =>  "modal", 'data-target' => '#myModal', :class => 'btn btn-xs btn-default'}  %></td>
+        <td><%= link_to 'Editar', editar_item_path(id_do_item: item.id), {:remote => true, 'data-toggle' =>  "modal", 'data-target' => '#myModal', :class => 'btn btn-xs btn-warning'}  %></td>
+      <% end %>
+
+	        <% if @invoice.status == 'ABERTA' %>
+	      		<td><%= link_to t('.destroy', :default => t("helpers.links.destroy")), [item.invoice, item], :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger' %>
+		      	<% else %>
+		        <td><%= link_to t('.destroy', :default => t("helpers.links.destroy")), [item.invoice, item], :method => :delete, :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) }, :class => 'btn btn-xs btn-danger', disabled: true %>
+		        </td>
+	        <% end %>
+      </tr>
+      <% end %>
+       </tbody>
+
+   </table>

@@ -1,0 +1,292 @@
+<%= form_for @expire_date, :html => { :class => "form-horizontal expire_date" } do |f| %>
+<script>
+$(document).ready(function(){
+$('#cpf').on('click',function(){
+	
+	if ($('#cnpj').val()) {
+		$("#cpf").val('');
+        alert('Você só pode informar um CPF ou um CNPJ!')
+    } else {
+    	$('#add').prop('disabled', false);
+    }
+});
+
+$('#cpf').on('keyup',function(){
+	
+	if ($('#cnpj').val()) {
+		$("#cpf").val('');
+        alert('Você só pode informar um CPF ou um CNPJ!')
+    } else {
+    	$('#add').prop('disabled', false);
+    }
+});
+});
+</script>
+
+<script>
+$(document).ready(function(){
+$('#cnpj').on('click',function(){
+	
+	if ($('#cpf').val()) {
+		$("#cnpj").val('');
+        alert('Você só pode informar um CPF ou um CNPJ!')
+    } else {
+    	$('#add').prop('disabled', false);
+    }
+});
+
+$('#cnpj').on('keyup',function(){
+	
+	if ($('#cpf').val()) {
+		$("#cnpj").val('');
+        alert('Você só pode informar um CPF ou um CNPJ!')
+    } else {
+    	$('#add').prop('disabled', false);
+    }
+});
+});
+</script>
+
+<!-- PARA CARREGAR O ENDEREÇO COM BASE NO CEP -->
+    <!-- Adicionando JQuery -->
+    <script>
+        $(document).ready(function() {
+
+            function limpa_formulário_cep() {
+                // Limpa valores do formulário de cep.
+                $("#rua").val("");
+                $("#bairro").val("");
+                $("#cidade").val("");
+                $("#uf").val("");
+             }
+            
+            //Quando o campo cep perde o foco.
+            $("#cep").blur(function() {
+
+                //Nova variável "cep" somente com dígitos.
+                var cep = $(this).val().replace(/\D/g, '');
+
+                //Verifica se campo cep possui valor informado.
+                if (cep != "") {
+
+                    //Expressão regular para validar o CEP.
+                    var validacep = /^[0-9]{8}$/;
+
+                    //Valida o formato do CEP.
+                    if(validacep.test(cep)) {
+
+                        //Preenche os campos com "..." enquanto consulta webservice.
+                        $("#rua").val("...")
+                        $("#bairro").val("...")
+                        $("#cidade").val("...")
+                        $("#uf").val("...")
+                        
+                        //Consulta o webservice viacep.com.br/
+                        $.getJSON("//viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
+
+                            if (!("erro" in dados)) {
+                                //Atualiza os campos com os valores da consulta.
+                                $("#rua").val(dados.logradouro);
+                                $("#bairro").val(dados.bairro);
+                                $("#cidade").val(dados.localidade);
+                                $("#uf").val(dados.uf);
+                                
+                            } //end if.
+                            else {
+                                //CEP pesquisado não foi encontrado.
+                                limpa_formulário_cep();
+                                alert("CEP não encontrado.");
+                            }
+                        });
+                    } //end if.
+                    else {
+                        //cep é inválido.
+                        limpa_formulário_cep();
+                        alert("Formato de CEP inválido.");
+                    }
+                } //end if.
+                else {
+                    //cep sem valor, limpa formulário.
+                    limpa_formulário_cep();
+                }
+            });
+        });
+
+    </script>
+  
+  
+  <% if @expire_date.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@expire_date.errors.count, "error") %> prohibited this expire_date from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @expire_date.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+  
+  <div class="form-group">
+    <%= f.label 'razão social', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-5">
+      <%= f.text_field :razao, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:razao) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'nome fantasia', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-5">
+      <%= f.text_field :nome_fantasia, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:nome_fantasia) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'CNPJ', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :cnpj, :class => 'form-control', id: 'cnpj' %>
+    </div>
+    <%=f.error_span(:cnpj) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :cep, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.text_field :cep, :class => 'form-control', id:'cep' %>
+    </div>
+    <%=f.error_span(:cep) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'endereço', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+      <%= f.text_field :endereco, :class => 'form-control', id:'rua' %>
+    </div>
+    <%=f.error_span(:endereco) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'numero', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-1">
+      <%= f.text_field :numero, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:numero) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'bairro', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :bairro, :class => 'form-control', id:'bairro' %>
+    </div>
+    <%=f.error_span(:bairro) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :cidade, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :cidade, :class => 'form-control', id:'cidade' %>
+    </div>
+    <%=f.error_span(:cidade) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :uf, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-1">
+      <%= f.text_field :uf, :class => 'form-control', id:'uf' %>
+    </div>
+    <%=f.error_span(:uf) %>
+  </div>
+  <div class="form-group">
+    <%= f.label :telefone, :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.text_field :telefone, :class => 'form-control', id:'phone' %>
+    </div>
+    <%=f.error_span(:telefone) %>
+  </div>
+  <div class="form-group">
+    <%= f.label 'inscrição estadual', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :inscricao, :class => 'form-control', id:'ie' %>
+    </div>
+    <%=f.error_span(:inscricao) %>
+  </div>
+    
+  <div class="form-group">
+    <%= f.label 'Ambiente NFE', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-2">
+      <%= f.select(:check_env, options_for_select([["Teste"], ["Produção"]], @expire_date.check_env), {include_blank: 'Selecione'}, :class => 'form-control') %>
+
+    </div>
+    <%=f.error_span(:check_env) %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label 'Url para testes', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :url_server_test, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:url_server_test) %>
+  </div>
+  
+    <div class="form-group">
+    <%= f.label 'Token para testes', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+      <%= f.text_field :token_test, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:token_test) %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label 'Url para produção', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.text_field :url_server_production, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:url_server_production) %>
+  </div>
+  
+    <div class="form-group">
+    <%= f.label 'Token para produção', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-4">
+      <%= f.text_field :token_production, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:token_production) %>
+  </div>
+  
+      <div class="form-group">
+    <%= f.label 'Porta', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-1">
+      <%= f.text_field :port, :class => 'form-control', id:'qnt' %>
+    </div>
+    <%=f.error_span(:port) %>
+  </div>
+  
+        <div class="form-group">
+    <%= f.label 'Sleep SEFAZ', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-1">
+      <%= f.text_field :sleep, :class => 'form-control', id:'ncm' %>
+    </div>
+    <%=f.error_span(:port) %>
+  </div>
+  
+  <div class="form-group">
+    <%= f.label 'Data', :class => 'control-label col-lg-2' %>
+    <div class="col-lg-3">
+      <%= f.date_field :date_expire, :class => 'form-control' %>
+    </div>
+    <%=f.error_span(:date_expire) %>
+  </div>
+   
+  <div class="form-group"> 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;
+  <%= f.label "Ativo?" %>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<%= f.check_box :active %>
+  <%=f.error_span(:active) %>
+  </div>
+
+  <div class="form-group">
+    <div class="col-lg-offset-2 col-lg-10">
+      <%= f.submit 'Salvar', :class => 'btn btn-primary' %>
+      <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                expire_dates_path, :class => 'btn btn-default' %>
+    </div>
+  </div>
+
+<% end %>
