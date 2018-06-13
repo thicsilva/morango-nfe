@@ -877,7 +877,7 @@ end
 
   #trazer os dados de ncm do produto quando selecionado
   def consulta_prod
-    @product = Product.select('codigo_ncm').where(name: params[:name]).first
+    @product = Product.select('codigo_ncm,cest').where(name: params[:name]).first
     respond_to do |format|
     format.html
     format.json { render :json => @product }

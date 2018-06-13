@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180404123607) do
+ActiveRecord::Schema.define(version: 20180613195449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -267,6 +267,7 @@ ActiveRecord::Schema.define(version: 20180404123607) do
     t.string   "codigo_ncm"
     t.decimal  "cost_value"
     t.date     "data_atualizacao_custo"
+    t.string   "cest"
   end
 
   create_table "receipts", force: :cascade do |t|

@@ -1,3 +1,32 @@
+<style>
+#Modal-intro .modal-dialog  {width:50%;}
+	.jumbotron
+{
+background-color:#ffffff;
+}
+</style>
+
+<script>
+$(document).ready(function() {
+//habilita ou não a exibição da explicação
+	if(localStorage.getItem("DontShow")) {
+			$('#Modal-intro').modal('hide');
+	} else {
+		$('#Modal-intro').modal('show');
+	}
+
+	$(document).on("click", "#forgetMe", function() {
+			localStorage.setItem("DontShow", "true");
+	});
+
+	$(document).on("click", "#showMe", function() {
+		$('#Modal-intro').modal('show');
+		localStorage.clear();
+	});
+
+  });
+</script>
+
 <% if !logged_in? %>
 
  <div>
@@ -131,7 +160,32 @@
  	      </div>
  	    </div>
  	<% end %>
+<p>&copy; <%= @date %> - D&D Support Service - Consultoria em T.I.</p>
+  <!-- Modal INTRODUÇÃO -->
+  <div class="modal fade" id="Modal-intro" tabindex="-1" role="dialog" aria-labelledby="memberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h3 class="modal-title" id="memberModalLabel"> <h3>Olá <%= current_user.name %>, temos novidades! <%= image_tag("news.png")%></h3>
+        </div>
+        <div class="modal-body">
+        	 <h5>
+  					A partir de agora, nossas atualizações serão informadas através deste popup, sempre que você acessar o nosso sistema.<br />
+            Mais pode ficar tranquilo, você pode desativar essas notificações clicando no botão "Não exibir novamente".
+          </h5>
 
- <% end %>
- <hr />
- <p>&copy; <%= @date %> - D&D Support Service - Consultoria em T.I.</p>
+        	<h5> <b>O que temos de novo nessa atualização?</b> <br>
+            A partir de agora você pode informar o codigo de CEST no cadastro do produto que ele será automaticamente disponibilizado no momento do preenchimento dos impostos de cada item da nota fiscal de saida, assim como já acontece com o Código NCM.</h5>
+  		  	<h4><b>Obrigado!</b></h4>
+
+         </div>
+        <div class="modal-footer">
+  				<button type="button" id="forgetMe" class="btn btn-default" data-dismiss="modal">Não exibir novamente</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<% end %>

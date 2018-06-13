@@ -35,6 +35,7 @@
       <th><%= model_class.human_attribute_name("Atualizado em") %></th>
       <th><%= model_class.human_attribute_name("unidade de medida") %></th>
       <th><%= model_class.human_attribute_name("cod NCM") %></th>
+      <th><%= model_class.human_attribute_name("Cest") %></th>
 
     </tr>
   </thead>
@@ -47,7 +48,7 @@
         <td><%= product.data_atualizacao_custo %></td>
         <td><%= product.unidade_comercial %></td>
         <td><%= product.codigo_ncm %></td>
-
+        <td><%= product.cest %></td>
       </tr>
     <% end %>
   </tbody>

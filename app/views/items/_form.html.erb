@@ -17,8 +17,7 @@ $(document).ready(function() {
 
     		success: function(obj){
         	$('#ncm').val(obj.codigo_ncm);
-
-
+          $('#cest').val(obj.cest);
         },
         error: function(){
             console.log(arguments);
@@ -147,6 +146,7 @@ $(document).ready(function() {
 	</div>
 -->
 	<%= f.hidden_field :codigo_ncm, id: 'ncm' -%>
+  <%= f.hidden_field :cest, id: 'cest' -%>
 
 	<% if @invoice.status == 'ABERTA' %>
     <%= f.submit 'Adicionar', class: 'btn btn-primary', id: 'add' %>

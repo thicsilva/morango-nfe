@@ -118,7 +118,7 @@ $(document).ready(function () {
     <div class="form-group">
 		<%= f.label 'name','CEST:', :class => 'control-label col-lg-4' %>
 		<div class="col-lg-5">
-		<%= f.text_field :cest, :class => 'form-control', placeholder: 'Cód Cest:', id: 'cest' %>
+		<%= f.text_field :cest, :class => 'form-control', placeholder: 'Cód Cest:', id: 'cest', maxlength: 7 %>
 		</div>
 		</div>
 		<div class="escala">

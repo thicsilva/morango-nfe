@@ -26,11 +26,11 @@
   <thead>
     <tr>
       <th><%= model_class.human_attribute_name("nome") %></th>
-            <th><%= model_class.human_attribute_name("Valor custo") %></th>
+      <th><%= model_class.human_attribute_name("Valor custo") %></th>
       <th><%= model_class.human_attribute_name("Atualizado em") %></th>
       <th><%= model_class.human_attribute_name("unidade medida") %></th>
       <th><%= model_class.human_attribute_name("codigo NCM") %></th>
-
+      <th><%= model_class.human_attribute_name("Cest") %></th>
       <th>Ações</th>
     </tr>
   </thead>
@@ -43,6 +43,7 @@
         <td><%= product.data_atualizacao_custo %></td>
         <td><%= product.unidade_comercial %></td>
         <td><%= product.codigo_ncm %></td>
+        <td><%= product.cest %></td>
 
         <td>
           <%= link_to "Editar",
